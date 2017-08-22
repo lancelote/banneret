@@ -1,6 +1,7 @@
 #!/usr/local/bin/python3
-# v0.1.2
+# v0.1.3
 
+import argparse
 import sys
 import getpass
 from shutil import rmtree
@@ -15,7 +16,7 @@ PLUGINS = f'{HOME}/Library/Application Support'
 LOGS = f'{HOME}/Library/Logs'
 
 
-def clean(version=None):
+def purify(version=None):
     if not version:
         sure = input('are you sure you want to purify your system (yes/no)? ')
         if sure == 'yes':
@@ -55,21 +56,28 @@ def clean(version=None):
     print('done')
 
 
+def create_parser():
+    parser = argparse.ArgumentParser(description='utils for PyCharm')
+    commands = parser.add_subparsers(title='commands', dest='command')
+    # commands.required = True
+
+    # clean
+    clean = commands.add_parser('clean', help='remove PyCharm configs')
+    clean.add_argument(
+        'version',
+        type=str,
+        help='IDE version to remove configs',
+        nargs='?'
+    )
+    return parser
+
+
 def main():
-    try:
-        command = sys.argv[1]
-    except IndexError:
-        print('unknown command')
-        return
-    if command == 'clean':
-        try:
-            version = sys.argv[2]
-        except IndexError:
-            version = None
-        clean(version)
-    else:
-        print('unknown command')
-        return
+    parser = create_parser()
+    args = parser.parse_args()
+
+    if args.command == 'clean':
+        purify(args)
 
 
 if __name__ == '__main__':
