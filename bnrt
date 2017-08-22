@@ -1,0 +1,80 @@
+#!/usr/local/bin/python3
+# v0.1.0
+
+import sys
+import getpass
+from shutil import rmtree
+from glob import glob
+
+USER = getpass.getuser()
+HOME = f'/Users/{USER}'
+
+CONFIGS = f'{HOME}/Library/Preferences'
+CACHES = f'{HOME}/Library/Caches'
+PLUGINS = f'{HOME}/Library/Application Support/'
+LOGS = f'{HOME}/Library/Logs/'
+
+
+def clean(version=None):
+    if not version:
+        sure = input('are you sure you want to purify your system (yes/no)? ')
+        if sure == 'yes':
+            version = 'PyCharm*'
+        else:
+            print('abort')
+            return
+
+    if not sys.platform == 'darwin':
+        print('only macOS is supported')
+
+    configurations = glob(f'{CONFIGS}/{version}')
+    caches = glob(f'{CACHES}/{version}')
+    plugins = glob(f'{PLUGINS}/{version}')
+    logs = glob(f'{LOGS}/{version}')
+
+    print('removing configurations...')
+    for config in configurations:
+        path = f'{CONFIGS}/{config}'
+        print(f'    {path}')
+        rmtree(path)
+
+    print('removing caches...')
+    for cache in caches:
+        path = f'{CACHES}/{cache}'
+        print(f'    {path}')
+        rmtree(path)
+
+    print('removing plugins...')
+    for plugin in plugins:
+        path = f'{PLUGINS}/{plugin}'
+        print(f'    {plugin}')
+        rmtree(path)
+
+    print('removing logs...')
+    for log in logs:
+        path = f'{LOGS}/{log}'
+        print(f'    {log}')
+        rmtree(path)
+
+    print('done')
+
+
+def main():
+    try:
+        command = sys.argv[1]
+    except IndexError:
+        print('unknown command')
+        return
+    if command == 'clean':
+        try:
+            version = sys.argv[2]
+        except IndexError:
+            version = None
+        clean(version)
+    else:
+        print('unknown command')
+        return
+
+
+if __name__ == '__main__':
+    main()
