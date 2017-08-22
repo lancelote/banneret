@@ -1,5 +1,5 @@
 #!/usr/local/bin/python3
-# v0.1.0
+# v0.1.1
 
 import sys
 import getpass
@@ -34,27 +34,23 @@ def clean(version=None):
 
     print('removing configurations...')
     for config in configurations:
-        path = f'{CONFIGS}/{config}'
-        print(f'    {path}')
-        rmtree(path)
+        print(f'    {config}')
+        rmtree(config)
 
     print('removing caches...')
     for cache in caches:
-        path = f'{CACHES}/{cache}'
-        print(f'    {path}')
-        rmtree(path)
+        print(f'    {cache}')
+        rmtree(cache)
 
     print('removing plugins...')
     for plugin in plugins:
-        path = f'{PLUGINS}/{plugin}'
         print(f'    {plugin}')
-        rmtree(path)
+        rmtree(plugin)
 
     print('removing logs...')
     for log in logs:
-        path = f'{LOGS}/{log}'
         print(f'    {log}')
-        rmtree(path)
+        rmtree(log)
 
     print('done')
 
