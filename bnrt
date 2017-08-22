@@ -1,5 +1,5 @@
 #!/usr/local/bin/python3
-# v0.1.1
+# v0.1.2
 
 import sys
 import getpass
@@ -11,8 +11,8 @@ HOME = f'/Users/{USER}'
 
 CONFIGS = f'{HOME}/Library/Preferences'
 CACHES = f'{HOME}/Library/Caches'
-PLUGINS = f'{HOME}/Library/Application Support/'
-LOGS = f'{HOME}/Library/Logs/'
+PLUGINS = f'{HOME}/Library/Application Support'
+LOGS = f'{HOME}/Library/Logs'
 
 
 def clean(version=None):
