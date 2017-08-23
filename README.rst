@@ -1,4 +1,4 @@
 banneret
 ========
 
-PyCharm testing swiss-army-knife
+PyCharm management swiss-army-knife
