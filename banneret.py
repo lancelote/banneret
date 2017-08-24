@@ -1,5 +1,5 @@
 #!/usr/local/bin/python3
-# v0.1.4
+# v0.1.5
 
 import argparse
 import sys
@@ -68,7 +68,7 @@ def clean_settings(args):
 def create_parser():
     parser = argparse.ArgumentParser(description='utils for PyCharm')
     commands = parser.add_subparsers(title='commands', dest='command')
-    # commands.required = True
+    commands.required = True
 
     # clean
     clean = commands.add_parser('clean', help='remove PyCharm settings')

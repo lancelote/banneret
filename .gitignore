@@ -3,3 +3,6 @@
 
 # Executable
 bnrt
+
+# pytest cache
+.cache/
