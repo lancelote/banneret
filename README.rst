@@ -20,8 +20,8 @@ usage
 
 .. code::
 
-    # to remove all PyCharm 2017.2 settings from system
-    bnrt clean PyCharm2017.2
+    bnrt clean PyCharm2017.2  # to remove all PyCharm 2017.2 settings from system
 
 see ``bnrt clean -h`` for more options (e.g. remove only plugins)
+
 see ``make help`` for repository management commands
