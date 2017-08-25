@@ -8,3 +8,20 @@ banneret
 ========
 
 PyCharm management swiss-army-knife
+
+requirements
+------------
+
+- Python 3.6
+- macOS
+
+usage
+-----
+
+.. code::
+
+    # to remove all PyCharm 2017.2 settings from system
+    bnrt clean PyCharm2017.2
+
+see ``bnrt clean -h`` for more options (e.g. remove only plugins)
+see ``make help`` for repository management commands
