@@ -1,5 +1,5 @@
 #!/usr/local/bin/python3
-# v0.1.5
+# v0.1.6
 
 import argparse
 import sys
@@ -16,7 +16,14 @@ PLUGINS = f'{HOME}/Library/Application Support'
 LOGS = f'{HOME}/Library/Logs'
 
 
-def clean_settings(args):
+def remove(version, path):
+    folders = glob('%s/%s' % (path, version))
+    for folder in folders:
+        print('rm %s' % folder)
+        rmtree(folder)
+
+
+def remove_all(args):
     version = args.version
     if not version:
         sure = input('purify settings for all versions? (yes/no) ')
@@ -26,41 +33,22 @@ def clean_settings(args):
             print('abort')
             return
 
-    clean_all = False
+    everything = False
     if not any([args.configs, args.caches, args.plugins, args.logs]):
-        clean_all = True
+        everything = True
 
     if not sys.platform == 'darwin':
         print('only macOS is supported')
         return
 
-    if args.configs or clean_all:
-        configurations = glob(f'{CONFIGS}/{version}')
-        print('removing configurations...')
-        for config in configurations:
-            print(f'    {config}')
-            rmtree(config)
-
-    if args.caches or clean_all:
-        caches = glob(f'{CACHES}/{version}')
-        print('removing caches...')
-        for cache in caches:
-            print(f'    {cache}')
-            rmtree(cache)
-
-    if args.plugins or clean_all:
-        plugins = glob(f'{PLUGINS}/{version}')
-        print('removing plugins...')
-        for plugin in plugins:
-            print(f'    {plugin}')
-            rmtree(plugin)
-
-    if args.logs or clean_all:
-        logs = glob(f'{LOGS}/{version}')
-        print('removing logs...')
-        for log in logs:
-            print(f'    {log}')
-            rmtree(log)
+    if args.configs or everything:
+        remove(version, CONFIGS)
+    if args.caches or everything:
+        remove(version, CACHES)
+    if args.plugins or everything:
+        remove(version, PLUGINS)
+    if args.logs or everything:
+        remove(version, LOGS)
 
     print('done')
 
@@ -90,7 +78,7 @@ def main():
     args = parser.parse_args()
 
     if args.command == 'clean':
-        clean_settings(args)
+        remove_all(args)
 
 
 if __name__ == '__main__':

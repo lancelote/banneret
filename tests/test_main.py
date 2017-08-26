@@ -1,15 +1,15 @@
 from unittest import mock
 
 from banneret import main
-from tests.conftest import mock_argv
+from tests.utils import mock_argv
 
 
-@mock.patch('banneret.clean_settings')
+@mock.patch('banneret.remove_all')
 @mock_argv('clean')
-def test_pure_clean(mock_clean_settings):
+def test_pure_clean(mock_remove_all):
     main()
-    mock_clean_settings.assert_called_once()
-    args = mock_clean_settings.call_args[0][0]
+    mock_remove_all.assert_called_once()
+    args = mock_remove_all.call_args[0][0]
     assert args.command == 'clean'
     assert not args.version
     assert not args.configs
@@ -18,12 +18,12 @@ def test_pure_clean(mock_clean_settings):
     assert not args.logs
 
 
-@mock.patch('banneret.clean_settings')
+@mock.patch('banneret.remove_all')
 @mock_argv('clean', 'PyCharm2016.3', '-Ccpl')
-def test_all_options_clean(mock_clean_settings):
+def test_all_options_clean(mock_remove_all):
     main()
-    mock_clean_settings.assert_called_once()
-    args = mock_clean_settings.call_args[0][0]
+    mock_remove_all.assert_called_once()
+    args = mock_remove_all.call_args[0][0]
     assert args.command == 'clean'
     assert args.version == 'PyCharm2016.3'
     assert args.configs
