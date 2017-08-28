@@ -1,5 +1,5 @@
 #!/usr/local/bin/python3
-# v0.1.6
+# v0.1.7
 
 import argparse
 import sys
@@ -26,12 +26,7 @@ def remove(version, path):
 def remove_all(args):
     version = args.version
     if not version:
-        sure = input('purify settings for all versions? (yes/no) ')
-        if sure == 'yes':
-            version = 'PyCharm*'
-        else:
-            print('abort')
-            return
+        version = 'PyCharm*'
 
     everything = False
     if not any([args.configs, args.caches, args.plugins, args.logs]):
@@ -78,7 +73,13 @@ def main():
     args = parser.parse_args()
 
     if args.command == 'clean':
-        remove_all(args)
+        if args.version:
+            remove_all(args)
+        elif input('purify settings for all versions? (yes/no) ') == 'yes':
+            remove_all(args)
+        else:
+            print('abort')
+
 
 
 if __name__ == '__main__':
