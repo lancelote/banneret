@@ -23,26 +23,19 @@ def remove(version, path):
         rmtree(folder)
 
 
-def remove_all(args):
-    version = args.version
-    if not version:
-        version = 'PyCharm*'
-
-    everything = False
-    if not any([args.configs, args.caches, args.plugins, args.logs]):
-        everything = True
-
+def remove_all(configs, caches, plugins, logs, version='PyCharm*'):
+    everything = True not in [configs, caches, plugins, logs]
     if not sys.platform == 'darwin':
         print('only macOS is supported')
         return
 
-    if args.configs or everything:
+    if configs or everything:
         remove(version, CONFIGS)
-    if args.caches or everything:
+    if caches or everything:
         remove(version, CACHES)
-    if args.plugins or everything:
+    if plugins or everything:
         remove(version, PLUGINS)
-    if args.logs or everything:
+    if logs or everything:
         remove(version, LOGS)
 
     print('done')
@@ -73,13 +66,11 @@ def main():
     args = parser.parse_args()
 
     if args.command == 'clean':
-        if args.version:
-            remove_all(args)
-        elif input('purify settings for all versions? (yes/no) ') == 'yes':
-            remove_all(args)
+        if args.version or input('remove for all versions? (yes/no) ') == 'yes':
+            remove_all(args.configs, args.caches, args.plugins, args.logs,
+                       args.version)
         else:
             print('abort')
-
 
 
 if __name__ == '__main__':
