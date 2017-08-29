@@ -16,7 +16,7 @@ PLUGINS = f'{HOME}/Library/Application Support'
 LOGS = f'{HOME}/Library/Logs'
 
 
-def remove(version, path):
+def remove(path, version):
     folders = glob('%s/%s' % (path, version))
     for folder in folders:
         print('rm %s' % folder)
@@ -30,13 +30,13 @@ def remove_all(configs, caches, plugins, logs, version='PyCharm*'):
         return
 
     if configs or everything:
-        remove(version, CONFIGS)
+        remove(CONFIGS, version)
     if caches or everything:
-        remove(version, CACHES)
+        remove(CACHES, version)
     if plugins or everything:
-        remove(version, PLUGINS)
+        remove(PLUGINS, version)
     if logs or everything:
-        remove(version, LOGS)
+        remove(LOGS, version)
 
     print('done')
 
