@@ -23,7 +23,8 @@ def remove(path, version):
         rmtree(folder)
 
 
-def remove_all(configs, caches, plugins, logs, version='PyCharm*'):
+def remove_all(configs=False, caches=False, plugins=False, logs=False,
+               version='PyCharm*'):
     everything = True not in [configs, caches, plugins, logs]
     if not sys.platform == 'darwin':
         print('only macOS is supported')
