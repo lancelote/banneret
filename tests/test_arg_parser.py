@@ -1,5 +1,7 @@
 import pytest
 
+from banneret import PWD, HOME
+
 
 class TestGeneral:
 
@@ -72,28 +74,28 @@ class TestClean:
 
 class TestZip:
 
-    def test_zip_without_args(self, parser):
-        args = parser.parse_args(['zip'])
-        assert args.command == 'zip'
-        assert not args.target
-        assert not args.project
+    def test_archive_without_args(self, parser):
+        args = parser.parse_args(['archive'])
+        assert args.command == 'archive'
+        assert args.target == f'{HOME}/Desktop'
+        assert args.project == PWD
 
     @pytest.mark.parametrize('flag', ['-t', '--target'])
-    def test_zip_with_target(self, parser, flag):
-        args = parser.parse_args(['zip', flag, 'target'])
-        assert args.command == 'zip'
+    def test_archive_with_target(self, parser, flag):
+        args = parser.parse_args(['archive', flag, 'target'])
+        assert args.command == 'archive'
         assert args.target == 'target'
-        assert not args.project
+        assert args.project == PWD
 
     @pytest.mark.parametrize('flag', ['-p', '--project'])
-    def test_zip_with_project(self, parser, flag):
-        args = parser.parse_args(['zip', flag, 'project'])
-        assert args.command == 'zip'
+    def test_archive_with_project(self, parser, flag):
+        args = parser.parse_args(['archive', flag, 'project'])
+        assert args.command == 'archive'
+        assert args.target == f'{HOME}/Desktop'
         assert args.project == 'project'
-        assert not args.target
 
-    def test_zip_with_target_and_project(self, parser):
-        args = parser.parse_args(['zip', '-t', 'target', '-p', 'project'])
-        assert args.command == 'zip'
+    def test_archive_with_target_and_project(self, parser):
+        args = parser.parse_args(['archive', '-t', 'target', '-p', 'project'])
+        assert args.command == 'archive'
         assert args.target == 'target'
         assert args.project == 'project'

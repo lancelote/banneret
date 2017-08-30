@@ -2,6 +2,7 @@
 # v0.1.7
 
 import argparse
+import os
 import sys
 import getpass
 from shutil import rmtree
@@ -9,6 +10,7 @@ from glob import glob
 
 USER = getpass.getuser()
 HOME = f'/Users/{USER}'
+PWD = os.getcwd()
 
 CONFIGS = f'{HOME}/Library/Preferences'
 CACHES = f'{HOME}/Library/Caches'
@@ -42,6 +44,10 @@ def remove_all(configs=False, caches=False, plugins=False, logs=False,
     print('done')
 
 
+def archive_project(target, project):
+    return target, project
+
+
 def create_parser():
     parser = argparse.ArgumentParser(description='utils for PyCharm')
     commands = parser.add_subparsers(title='commands', dest='command')
@@ -59,6 +65,13 @@ def create_parser():
                        help='remove plugins')
     clean.add_argument('-l', '--logs', action='store_true',
                        help='remove logs')
+
+    # archive
+    archive = commands.add_parser('archive', help='archive current project')
+    archive.add_argument('-t', '--target', default=f'{HOME}/Desktop',
+                         help='where archive will be placed')
+    archive.add_argument('-p', '--project', default=PWD,
+                         help='project to be archived')
     return parser
 
 
@@ -72,6 +85,8 @@ def main():
                        args.version)
         else:
             print('abort')
+    elif args.command == 'archive':
+        archive_project(args.target, args.project)
 
 
 if __name__ == '__main__':
