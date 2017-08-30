@@ -1,5 +1,5 @@
 #!/usr/local/bin/python3
-# v0.1.6
+# v0.1.7
 
 import argparse
 import sys
@@ -16,39 +16,28 @@ PLUGINS = f'{HOME}/Library/Application Support'
 LOGS = f'{HOME}/Library/Logs'
 
 
-def remove(version, path):
+def remove(path, version):
     folders = glob('%s/%s' % (path, version))
     for folder in folders:
         print('rm %s' % folder)
         rmtree(folder)
 
 
-def remove_all(args):
-    version = args.version
-    if not version:
-        sure = input('purify settings for all versions? (yes/no) ')
-        if sure == 'yes':
-            version = 'PyCharm*'
-        else:
-            print('abort')
-            return
-
-    everything = False
-    if not any([args.configs, args.caches, args.plugins, args.logs]):
-        everything = True
-
+def remove_all(configs=False, caches=False, plugins=False, logs=False,
+               version='PyCharm*'):
+    everything = True not in [configs, caches, plugins, logs]
     if not sys.platform == 'darwin':
         print('only macOS is supported')
         return
 
-    if args.configs or everything:
-        remove(version, CONFIGS)
-    if args.caches or everything:
-        remove(version, CACHES)
-    if args.plugins or everything:
-        remove(version, PLUGINS)
-    if args.logs or everything:
-        remove(version, LOGS)
+    if configs or everything:
+        remove(CONFIGS, version)
+    if caches or everything:
+        remove(CACHES, version)
+    if plugins or everything:
+        remove(PLUGINS, version)
+    if logs or everything:
+        remove(LOGS, version)
 
     print('done')
 
@@ -78,7 +67,11 @@ def main():
     args = parser.parse_args()
 
     if args.command == 'clean':
-        remove_all(args)
+        if args.version or input('remove for all versions? (yes/no) ') == 'yes':
+            remove_all(args.configs, args.caches, args.plugins, args.logs,
+                       args.version)
+        else:
+            print('abort')
 
 
 if __name__ == '__main__':
