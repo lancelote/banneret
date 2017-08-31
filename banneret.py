@@ -21,25 +21,26 @@ def remove(path, version):
     for folder in folders:
         print('rm %s' % folder)
         rmtree(folder)
+    return bool(folders)
 
 
 def remove_all(configs=False, caches=False, plugins=False, logs=False,
                version='PyCharm*'):
+    removed = False
     everything = True not in [configs, caches, plugins, logs]
     if not sys.platform == 'darwin':
         print('only macOS is supported')
         return
 
     if configs or everything:
-        remove(CONFIGS, version)
+        removed |= remove(CONFIGS, version)
     if caches or everything:
-        remove(CACHES, version)
+        removed |= remove(CACHES, version)
     if plugins or everything:
-        remove(PLUGINS, version)
+        removed |= remove(PLUGINS, version)
     if logs or everything:
-        remove(LOGS, version)
-
-    print('done')
+        removed |= remove(LOGS, version)
+    return removed
 
 
 def create_parser():
@@ -68,8 +69,10 @@ def main():
 
     if args.command == 'clean':
         if args.version or input('remove for all versions? (yes/no) ') == 'yes':
-            remove_all(args.configs, args.caches, args.plugins, args.logs,
-                       args.version)
+            removed = remove_all(args.configs, args.caches, args.plugins,
+                                 args.logs, args.version)
+            if not removed:
+                print('nothing to remove')
         else:
             print('abort')
 
