@@ -1,18 +1,19 @@
 #!/usr/local/bin/python3
 
-__version__ = '0.1.9'
+__version__ = '0.2.0'
 
 import argparse
 import re
 import os
 import sys
 import getpass
-from shutil import rmtree
+from shutil import rmtree, make_archive
 from glob import glob
 
 USER = getpass.getuser()
 HOME = f'/Users/{USER}'
 PWD = os.getcwd()
+PROJECTS = f'{HOME}/PycharmProjects'
 
 CONFIGS = f'{HOME}/Library/Preferences'
 CACHES = f'{HOME}/Library/Caches'
@@ -55,8 +56,12 @@ def remove_all(configs=False, caches=False, plugins=False, logs=False,
     return removed
 
 
-def archive_project(target, project):
-    return target, project
+def archive_project(project, target, projects=PROJECTS):
+    project, target, projects = str(project), str(target), str(projects)
+    if os.sep not in project:
+        project = os.path.join(projects, project)
+    archive = os.path.join(target, project.split(os.sep)[-1])
+    make_archive(base_name=archive, format='zip', root_dir=project)
 
 
 def create_parser():
@@ -79,10 +84,10 @@ def create_parser():
 
     # archive
     archive = commands.add_parser('archive', help='archive current project')
-    archive.add_argument('-t', '--target', default=f'{HOME}/Desktop',
-                         help='where archive will be placed')
     archive.add_argument('-p', '--project', default=PWD,
                          help='project to be archived')
+    archive.add_argument('-t', '--target', default=f'{HOME}/Desktop',
+                         help='where archive will be placed')
     return parser
 
 
@@ -115,7 +120,7 @@ def main():
             print('abort')
             return
     elif args.command == 'archive':
-        archive_project(args.target, args.project)
+        archive_project(args.project, args.target)
 
 
 if __name__ == '__main__':
