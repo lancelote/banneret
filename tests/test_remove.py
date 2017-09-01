@@ -29,3 +29,16 @@ def test_removes_everything(tmpdir):
 def test_unknown_path():
     remove('qwerty', 'PyCharm*')
     # no exception is raised
+
+
+class TestReturnCorrectStatus:
+
+    def test_remove_returns_false_if_nothing_was_removed(self):
+        result = remove('unknown_path', 'version')
+        assert not result
+
+    def test_remove_returns_true_if_something_was_removed(self, tmpdir):
+        base_path = tmpdir.mkdir('base_path')
+        base_path.mkdir('PyCharm2017.2')
+        result = remove(base_path, 'PyCharm2017.2')
+        assert result

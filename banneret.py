@@ -1,7 +1,9 @@
 #!/usr/local/bin/python3
-# v0.1.7
+
+__version__ = '0.1.9'
 
 import argparse
+import re
 import os
 import sys
 import getpass
@@ -17,31 +19,40 @@ CACHES = f'{HOME}/Library/Caches'
 PLUGINS = f'{HOME}/Library/Application Support'
 LOGS = f'{HOME}/Library/Logs'
 
+SUPPORTED_IDE = {
+    'pycharm': 'PyCharm',
+    'pycharmce': 'PyCharmCE',
+    'intellijidea': 'IntelliJIdea',
+    'idea': 'IntelliJIdea',
+    'intellij': 'IntelliJIdea'
+}
+
 
 def remove(path, version):
     folders = glob('%s/%s' % (path, version))
     for folder in folders:
         print('rm %s' % folder)
         rmtree(folder)
+    return bool(folders)
 
 
 def remove_all(configs=False, caches=False, plugins=False, logs=False,
                version='PyCharm*'):
+    removed = False
     everything = True not in [configs, caches, plugins, logs]
     if not sys.platform == 'darwin':
         print('only macOS is supported')
         return
 
     if configs or everything:
-        remove(CONFIGS, version)
+        removed |= remove(CONFIGS, version)
     if caches or everything:
-        remove(CACHES, version)
+        removed |= remove(CACHES, version)
     if plugins or everything:
-        remove(PLUGINS, version)
+        removed |= remove(PLUGINS, version)
     if logs or everything:
-        remove(LOGS, version)
-
-    print('done')
+        removed |= remove(LOGS, version)
+    return removed
 
 
 def archive_project(target, project):
@@ -75,16 +86,34 @@ def create_parser():
     return parser
 
 
+def normalize_version(version):
+    match = re.match(r'(?P<ide>[a-zA-Z]+)(?P<version>[\d.]+)?', version)
+    if not match or match.group('ide').lower() not in SUPPORTED_IDE:
+        raise ValueError
+    else:
+        ide = SUPPORTED_IDE[match.group('ide').lower()]
+        version = match.group('version') or '*'
+        return ide, version
+
+
 def main():
     parser = create_parser()
     args = parser.parse_args()
 
     if args.command == 'clean':
-        if args.version or input('remove for all versions? (yes/no) ') == 'yes':
-            remove_all(args.configs, args.caches, args.plugins, args.logs,
-                       args.version)
+        try:
+            ide, version = normalize_version(args.version)
+        except ValueError:
+            print('wrong or unsupported target')
+            return
+        if version != '*' or input('remove all versions? (yes/no) ') == 'yes':
+            removed = remove_all(args.configs, args.caches, args.plugins,
+                                 args.logs, ide + version)
+            if not removed:
+                print('nothing to remove')
         else:
             print('abort')
+            return
     elif args.command == 'archive':
         archive_project(args.target, args.project)
 

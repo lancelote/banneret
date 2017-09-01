@@ -45,3 +45,33 @@ class TestArgumentsLogic:
     def test_remove_logs(self, mock_remove):
         remove_all(logs=True)
         mock_remove.assert_called_once_with(LOGS, 'PyCharm*')
+
+
+@mock.patch('sys.platform', 'darwin')
+@mock.patch('banneret.remove')
+class TestReturnStatus:
+
+    def test_nothing_was_removed(self, mock_remove):
+        mock_remove.return_value = False
+        result = remove_all()
+        assert not result
+
+    def test_everything_was_removed(self, mock_remove):
+        mock_remove.return_value = True
+        result = remove_all()
+        assert result
+
+    def test_only_logs_were_removed(self, mock_remove):
+        mock_remove.side_effect = [False, False, False, True]
+        result = remove_all()
+        assert result
+
+    def test_only_plugins_were_removed(self, mock_remove):
+        mock_remove.side_effect = [False, False, True, False]
+        result = remove_all()
+        assert result
+
+    def test_only_plugins_and_logs_were_removed(self, mock_remove):
+        mock_remove.side_effect = [False, False, True, True]
+        result = remove_all()
+        assert result
