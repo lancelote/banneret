@@ -1,6 +1,6 @@
 #!/usr/local/bin/python3
 
-__version__ = '0.1.8'
+__version__ = '0.1.9'
 
 import argparse
 import re
@@ -19,6 +19,7 @@ LOGS = f'{HOME}/Library/Logs'
 
 SUPPORTED_IDE = {
     'pycharm': 'PyCharm',
+    'pycharmce': 'PyCharmCE',
     'intellijidea': 'IntelliJIdea',
     'idea': 'IntelliJIdea',
     'intellij': 'IntelliJIdea'

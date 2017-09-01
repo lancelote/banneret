@@ -12,7 +12,7 @@ deps:
 test:
 	python -m pytest tests
 
-deploy: test
+deploy:
 	cp banneret.py bnrt
 	chmod +x bnrt
 	cp bnrt /usr/local/bin/
