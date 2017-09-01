@@ -2,6 +2,7 @@
 # v0.1.7
 
 import argparse
+import re
 import sys
 import getpass
 from shutil import rmtree
@@ -14,6 +15,13 @@ CONFIGS = f'{HOME}/Library/Preferences'
 CACHES = f'{HOME}/Library/Caches'
 PLUGINS = f'{HOME}/Library/Application Support'
 LOGS = f'{HOME}/Library/Logs'
+
+SUPPORTED_IDE = {
+    'pycharm': 'PyCharm',
+    'intellijidea': 'IntelliJIdea',
+    'idea': 'IntelliJIdea',
+    'intellij': 'IntelliJIdea'
+}
 
 
 def remove(path, version):
@@ -63,18 +71,34 @@ def create_parser():
     return parser
 
 
+def normalize_version(version):
+    match = re.match(r'(?P<ide>[a-zA-Z]+)(?P<version>[\d.]+)?', version)
+    if not match or match.group('ide').lower() not in SUPPORTED_IDE:
+        raise ValueError
+    else:
+        ide = SUPPORTED_IDE[match.group('ide').lower()]
+        version = match.group('version') or '*'
+        return ide, version
+
+
 def main():
     parser = create_parser()
     args = parser.parse_args()
 
     if args.command == 'clean':
-        if args.version or input('remove for all versions? (yes/no) ') == 'yes':
+        try:
+            ide, version = normalize_version(args.version)
+        except ValueError:
+            print('wrong or unsupported target')
+            return
+        if version != '*' or input('remove all versions? (yes/no) ') == 'yes':
             removed = remove_all(args.configs, args.caches, args.plugins,
-                                 args.logs, args.version)
+                                 args.logs, ide + version)
             if not removed:
                 print('nothing to remove')
         else:
             print('abort')
+            return
 
 
 if __name__ == '__main__':
