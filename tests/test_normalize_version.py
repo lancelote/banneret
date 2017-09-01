@@ -23,3 +23,9 @@ def test_ide_and_version():
     ide, version = normalize_version('idea2017.2')
     assert ide == 'IntelliJIdea'
     assert version == '2017.2'
+
+
+def test_community_edition_is_supported():
+    ide, version = normalize_version('pycharmce2017.2')
+    assert ide == 'PyCharmCE'
+    assert version == '2017.2'
