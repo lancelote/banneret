@@ -1,5 +1,6 @@
 #!/usr/local/bin/python3
-# v0.1.7
+
+__version__ = '0.1.8'
 
 import argparse
 import re
