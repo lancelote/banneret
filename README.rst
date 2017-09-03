@@ -15,13 +15,27 @@ requirements
 - Python 3.6
 - macOS
 
+supported
+---------
+
+- PyCharm
+- IntelliJIdea
+
 usage
 -----
 
 .. code::
 
     bnrt clean PyCharm2017.2  # to remove all PyCharm 2017.2 settings from system
+    bnrt clean pycharm        # to remove all PyCharm versions settings
+    bnrt clean idea           # to remove all IntelliJIdea versions settings
+    bnrt clean PyCharmCE      # remove all community editions settings
 
-see ``bnrt clean -h`` for more options (e.g. remove only plugins)
+    bnrt archive              # to zip current folder and send it to desktop
+    bnrt archive -p hello     # to zip project named "hello" in PycharmProjects
+    bnrt archive -t /opt      # to zip current folder and set in to /opt
 
-see ``make help`` for repository management commands
+management
+----------
+
+for repository tasks ``Makefile`` is used, try ``make help`` to view available commands
