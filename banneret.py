@@ -1,20 +1,21 @@
 #!/usr/local/bin/python3
 
-__version__ = '0.2.0'
+__version__ = '0.2.1'
 
 import argparse
-import re
-import os
-import sys
 import getpass
-from shutil import rmtree, make_archive
+import logging
+import os
+import re
+import sys
 from glob import glob
+from shutil import rmtree, make_archive
 
 USER = getpass.getuser()
 HOME = f'/Users/{USER}'
 PWD = os.getcwd()
-PROJECTS = f'{HOME}/PycharmProjects'
 
+PROJECTS = f'{HOME}/PycharmProjects'
 CONFIGS = f'{HOME}/Library/Preferences'
 CACHES = f'{HOME}/Library/Caches'
 PLUGINS = f'{HOME}/Library/Application Support'
@@ -30,19 +31,23 @@ SUPPORTED_IDE = {
 
 
 def remove(path, version):
+    logging.debug('call remove path %s and version %s' % (path, version))
     folders = glob('%s/%s' % (path, version))
     for folder in folders:
-        print('rm %s' % folder)
+        logging.info('rm %s' % folder)
         rmtree(folder)
     return bool(folders)
 
 
 def remove_all(configs=False, caches=False, plugins=False, logs=False,
                version='PyCharm*'):
+    logging.debug('remove_all version %s: configs %s, caches %s, plugins %s, '
+                  'logs %s' % (version, configs, caches, plugins, logs))
     removed = False
     everything = True not in [configs, caches, plugins, logs]
+    logging.debug('remove everything: %s' % everything)
     if not sys.platform == 'darwin':
-        print('only macOS is supported')
+        logging.info('wrong os: %s' % sys.platform)
         return
 
     if configs or everything:
@@ -53,21 +58,29 @@ def remove_all(configs=False, caches=False, plugins=False, logs=False,
         removed |= remove(PLUGINS, version)
     if logs or everything:
         removed |= remove(LOGS, version)
+    logging.debug('was something removed: %s' % removed)
     return removed
 
 
 def archive_project(project, target, projects=PROJECTS):
+    logging.debug('archive project %s to target %s' % (project, target))
     project, target, projects = str(project), str(target), str(projects)
     if os.sep not in project:
         project = os.path.join(projects, project)
+        logging.debug('project path not found, new path: %s' % project)
     archive = os.path.join(target, project.split(os.sep)[-1])
     make_archive(base_name=archive, format='zip', root_dir=project)
+    logging.info('archive %s.zip is created' % archive)
 
 
 def create_parser():
     parser = argparse.ArgumentParser(description='utils for PyCharm')
     commands = parser.add_subparsers(title='commands', dest='command')
     commands.required = True
+
+    # verbose
+    parser.add_argument('-v', '--verbose', action='store_true',
+                        help='verbose level')
 
     # clean
     clean = commands.add_parser('clean', help='remove PyCharm settings')
@@ -92,12 +105,14 @@ def create_parser():
 
 
 def normalize_version(version):
+    logging.debug('normalizing version %s' % version)
     match = re.match(r'(?P<ide>[a-zA-Z]+)(?P<version>[\d.]+)?', version)
     if not match or match.group('ide').lower() not in SUPPORTED_IDE:
         raise ValueError
     else:
         ide = SUPPORTED_IDE[match.group('ide').lower()]
         version = match.group('version') or '*'
+        logging.debug('normalize result: ide %s, version %s' % (ide, version))
         return ide, version
 
 
@@ -105,22 +120,30 @@ def main():
     parser = create_parser()
     args = parser.parse_args()
 
+    logging_level = logging.DEBUG if args.verbose else logging.INFO
+    logging.basicConfig(level=logging_level, format='%(message)s')
+    logging.debug('cli arguments: %s' % ', '.join(sys.argv[1:]))
+
     if args.command == 'clean':
         try:
             ide, version = normalize_version(args.version)
         except ValueError:
-            print('wrong or unsupported target')
+            logging.info('wrong or unsupported version %s' % args.version)
             return
         if version != '*' or input('remove all versions? (yes/no) ') == 'yes':
             removed = remove_all(args.configs, args.caches, args.plugins,
                                  args.logs, ide + version)
             if not removed:
-                print('nothing to remove')
+                logging.info('nothing to remove')
         else:
-            print('abort')
+            logging.info('abort')
             return
     elif args.command == 'archive':
-        archive_project(args.project, args.target)
+        try:
+            archive_project(args.project, args.target)
+        except FileNotFoundError:
+            logging.info('unknown project or target')
+            return
 
 
 if __name__ == '__main__':
