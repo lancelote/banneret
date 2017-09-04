@@ -35,6 +35,8 @@ usage
     bnrt archive -p hello     # to zip project named "hello" in PycharmProjects
     bnrt archive -t /opt      # to zip current folder and set in to /opt
 
+    bnrt -v <command>         # verbose output for debugging
+
 management
 ----------
 
