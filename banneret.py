@@ -31,7 +31,6 @@ SUPPORTED_IDE = {
 
 
 def remove(path, version):
-    logging.debug('call remove path %s and version %s' % (path, version))
     folders = glob('%s/%s' % (path, version))
     for folder in folders:
         logging.info('rm %s' % folder)
@@ -41,11 +40,11 @@ def remove(path, version):
 
 def remove_all(configs=False, caches=False, plugins=False, logs=False,
                version='PyCharm*'):
-    logging.debug('remove_all version %s: configs %s, caches %s, plugins %s, '
+    logging.debug('remove args: version %s, configs %s, caches %s, plugins %s, '
                   'logs %s' % (version, configs, caches, plugins, logs))
     removed = False
     everything = True not in [configs, caches, plugins, logs]
-    logging.debug('remove everything: %s' % everything)
+    logging.debug('remove all settings: %s' % everything)
     if not sys.platform == 'darwin':
         logging.info('wrong os: %s' % sys.platform)
         return
@@ -63,7 +62,7 @@ def remove_all(configs=False, caches=False, plugins=False, logs=False,
 
 
 def archive_project(project, target, projects=PROJECTS):
-    logging.debug('archive project %s to target %s' % (project, target))
+    logging.debug('archive: project %s to target %s' % (project, target))
     project, target, projects = str(project), str(target), str(projects)
     if os.sep not in project:
         project = os.path.join(projects, project)
@@ -105,7 +104,7 @@ def create_parser():
 
 
 def normalize_version(version):
-    logging.debug('normalizing version %s' % version)
+    logging.debug('normalize: version %s' % version)
     match = re.match(r'(?P<ide>[a-zA-Z]+)(?P<version>[\d.]+)?', version)
     if not match or match.group('ide').lower() not in SUPPORTED_IDE:
         raise ValueError
@@ -128,7 +127,7 @@ def main():
         try:
             ide, version = normalize_version(args.version)
         except ValueError:
-            logging.info('wrong or unsupported version %s' % args.version)
+            logging.info('wrong or unsupported version: %s' % args.version)
             return
         if version != '*' or input('remove all versions? (yes/no) ') == 'yes':
             removed = remove_all(args.configs, args.caches, args.plugins,
