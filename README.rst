@@ -29,7 +29,7 @@ usage
     bnrt clean PyCharm2017.2  # to remove all PyCharm 2017.2 settings from system
     bnrt clean pycharm        # to remove all PyCharm versions settings
     bnrt clean idea           # to remove all IntelliJIdea versions settings
-    bnrt clean PyCharmCE      # remove all community editions settings
+    bnrt clean PyCharmCE      # to remove all community editions settings
 
     bnrt archive              # to zip current folder and send it to desktop
     bnrt archive -p hello     # to zip project named "hello" in PycharmProjects
