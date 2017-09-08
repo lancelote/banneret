@@ -1,6 +1,6 @@
 #!/usr/local/bin/python3
 
-__version__ = '0.2.2'
+__version__ = '0.2.3'
 
 import argparse
 import getpass
@@ -76,6 +76,10 @@ def create_parser():
     parser = argparse.ArgumentParser(description='utils for PyCharm')
     commands = parser.add_subparsers(title='commands', dest='command')
     commands.required = True
+
+    # version
+    parser.add_argument('--version', action='version',
+                        version='%(prog)s ' + __version__)
 
     # verbose
     parser.add_argument('-v', '--verbose', action='store_true',

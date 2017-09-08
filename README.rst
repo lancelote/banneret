@@ -36,6 +36,7 @@ usage
     bnrt archive -t /opt      # to zip current folder and set in to /opt
 
     bnrt -v <command>         # verbose output for debugging
+    bnrt --version            # script version
 
 management
 ----------
