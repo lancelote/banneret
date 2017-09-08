@@ -43,7 +43,7 @@ def remove_all(configs=False, caches=False, plugins=False, logs=False,
     logging.debug('remove args: version %s, configs %s, caches %s, plugins %s, '
                   'logs %s' % (version, configs, caches, plugins, logs))
     removed = False
-    everything = True not in [configs, caches, plugins, logs]
+    everything = not any([configs, caches, plugins, logs])
     logging.debug('remove all settings: %s' % everything)
     if not sys.platform == 'darwin':
         logging.info('wrong os: %s' % sys.platform)
@@ -100,6 +100,15 @@ def create_parser():
                          help='project to be archived')
     archive.add_argument('-t', '--target', default=f'{HOME}/Desktop',
                          help='where archive will be placed')
+
+    # docker
+    docker = commands.add_parser('docker', help='removes docker artifacts')
+    docker.add_argument('-v', '--volumes', action='store_true',
+                        help='remove volumes')
+    docker.add_argument('-c', '--containers', action='store_true',
+                        help='remove containers')
+    docker.add_argument('-i', '--images', action='store_true',
+                        help='remove images')
     return parser
 
 
@@ -113,6 +122,10 @@ def normalize_version(version):
         version = match.group('version') or '*'
         logging.debug('normalize result: ide %s, version %s' % (ide, version))
         return ide, version
+
+
+def clean_docker(volumes, containers, images):
+    pass
 
 
 def main():
@@ -143,6 +156,11 @@ def main():
         except FileNotFoundError:
             logging.info('unknown project or target')
             return
+    elif args.command == 'docker':
+        if args.volumes or args.containers or args.images:
+            clean_docker(args.volumes, args.containers, args.images)
+        else:
+            clean_docker(True, True, True)
 
 
 if __name__ == '__main__':

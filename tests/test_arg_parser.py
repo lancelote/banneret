@@ -99,3 +99,9 @@ class TestZip:
         assert args.command == 'archive'
         assert args.target == 'target'
         assert args.project == 'project'
+
+
+class TestDocker:
+
+    def test_docker_without_args(self):
+        pass
