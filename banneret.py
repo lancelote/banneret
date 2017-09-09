@@ -1,6 +1,6 @@
 #!/usr/local/bin/python3
 
-__version__ = '0.2.3'
+__version__ = '0.2.4'
 
 import argparse
 import getpass
@@ -10,6 +10,11 @@ import re
 import sys
 from glob import glob
 from shutil import rmtree, make_archive
+
+try:
+    import docker
+except ImportError:
+    docker = None
 
 USER = getpass.getuser()
 HOME = f'/Users/{USER}'
@@ -128,8 +133,25 @@ def normalize_version(version):
         return ide, version
 
 
-def clean_docker(volumes, containers, images):
+def remove_containers():
     pass
+
+
+def remove_images():
+    pass
+
+
+def remove_volumes():
+    pass
+
+
+def clean_docker(containers=True, images=True, volumes=True, ):
+    if containers:
+        remove_containers()
+    if images:
+        remove_images()
+    if volumes:
+        remove_volumes()
 
 
 def main():
@@ -161,10 +183,13 @@ def main():
             logging.info('unknown project or target')
             return
     elif args.command == 'docker':
-        if args.volumes or args.containers or args.images:
-            clean_docker(args.volumes, args.containers, args.images)
+        if not docker:
+            logging.info('docker api sdk required to operate'
+                         ' - pip install docker')
+        elif args.volumes or args.containers or args.images:
+            clean_docker(args.containers, args.images, args.volumes)
         else:
-            clean_docker(True, True, True)
+            clean_docker()
 
 
 if __name__ == '__main__':
