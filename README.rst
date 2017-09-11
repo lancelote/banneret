@@ -35,6 +35,9 @@ usage
     bnrt archive -p hello     # to zip project named "hello" in PycharmProjects
     bnrt archive -t /opt      # to zip current folder and send it to /opt
 
+    bnrt docker               # to remove all containers, images and volumes
+    bnrt docker -i            # to remove all docker images
+
     bnrt -v <command>         # verbose output for debugging
     bnrt --version            # script version
 
