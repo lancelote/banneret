@@ -103,5 +103,32 @@ class TestZip:
 
 class TestDocker:
 
-    def test_docker_without_args(self):
-        pass
+    def test_without_flags(self, parser):
+        args = parser.parse_args(['docker'])
+        assert not args.containers
+        assert not args.images
+        assert not args.volumes
+
+    def test_remove_only_containers(self, parser):
+        args = parser.parse_args('docker -c'.split())
+        assert args.containers
+        assert not args.images
+        assert not args.volumes
+
+    def test_remove_only_images(self, parser):
+        args = parser.parse_args('docker -i'.split())
+        assert not args.containers
+        assert args.images
+        assert not args.volumes
+
+    def test_remove_only_volumes(self, parser):
+        args = parser.parse_args('docker -v'.split())
+        assert not args.containers
+        assert not args.images
+        assert args.volumes
+
+    def test_remove_containers_and_volumes(self, parser):
+        args = parser.parse_args('docker -cv'.split())
+        assert args.containers
+        assert not args.images
+        assert args.volumes

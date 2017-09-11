@@ -91,33 +91,33 @@ def create_parser():
                         help='verbose level')
 
     # clean
-    clean = commands.add_parser('clean', help='remove PyCharm settings')
-    clean.add_argument('version', type=str, nargs='?',
+    cmd_clean = commands.add_parser('clean', help='remove PyCharm settings')
+    cmd_clean.add_argument('version', type=str, nargs='?',
                        help='IDE version to remove settings for')
-    clean.add_argument('-C', '--configs', action='store_true',
+    cmd_clean.add_argument('-C', '--configs', action='store_true',
                        help='remove configurations')
-    clean.add_argument('-c', '--caches', action='store_true',
+    cmd_clean.add_argument('-c', '--caches', action='store_true',
                        help='remove caches')
-    clean.add_argument('-p', '--plugins', action='store_true',
+    cmd_clean.add_argument('-p', '--plugins', action='store_true',
                        help='remove plugins')
-    clean.add_argument('-l', '--logs', action='store_true',
+    cmd_clean.add_argument('-l', '--logs', action='store_true',
                        help='remove logs')
 
     # archive
-    archive = commands.add_parser('archive', help='archive current project')
-    archive.add_argument('-p', '--project', default=PWD,
-                         help='project to be archived')
-    archive.add_argument('-t', '--target', default=f'{HOME}/Desktop',
-                         help='where archive will be placed')
+    cmd_archive = commands.add_parser('archive', help='archive current project')
+    cmd_archive.add_argument('-p', '--project', default=PWD,
+                             help='project to be archived')
+    cmd_archive.add_argument('-t', '--target', default=f'{HOME}/Desktop',
+                             help='where archive will be placed')
 
     # docker
-    docker = commands.add_parser('docker', help='removes docker artifacts')
-    docker.add_argument('-v', '--volumes', action='store_true',
-                        help='remove volumes')
-    docker.add_argument('-c', '--containers', action='store_true',
-                        help='remove containers')
-    docker.add_argument('-i', '--images', action='store_true',
-                        help='remove images')
+    cmd_docker = commands.add_parser('docker', help='removes docker artifacts')
+    cmd_docker.add_argument('-c', '--containers', action='store_true',
+                            help='remove containers')
+    cmd_docker.add_argument('-i', '--images', action='store_true',
+                            help='remove images')
+    cmd_docker.add_argument('-v', '--volumes', action='store_true',
+                            help='remove volumes')
     return parser
 
 
