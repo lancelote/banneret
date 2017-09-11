@@ -93,15 +93,15 @@ def create_parser():
     # clean
     cmd_clean = commands.add_parser('clean', help='remove PyCharm settings')
     cmd_clean.add_argument('version', type=str, nargs='?',
-                       help='IDE version to remove settings for')
+                           help='IDE version to remove settings for')
     cmd_clean.add_argument('-C', '--configs', action='store_true',
-                       help='remove configurations')
+                           help='remove configurations')
     cmd_clean.add_argument('-c', '--caches', action='store_true',
-                       help='remove caches')
+                           help='remove caches')
     cmd_clean.add_argument('-p', '--plugins', action='store_true',
-                       help='remove plugins')
+                           help='remove plugins')
     cmd_clean.add_argument('-l', '--logs', action='store_true',
-                       help='remove logs')
+                           help='remove logs')
 
     # archive
     cmd_archive = commands.add_parser('archive', help='archive current project')
@@ -133,25 +133,43 @@ def normalize_version(version):
         return ide, version
 
 
-def remove_containers():
-    pass
+def remove_containers(client):
+    containers = client.containers.list(all=True)
+    for container in containers:
+        logging.info('rm %s' % container)
+        container.remove(force=True)
+    return bool(containers)
 
 
-def remove_images():
-    pass
+def remove_images(client):
+    images = client.images.list()
+    for image in images:
+        logging.info('rm %s' % images)
+        client.images.remove(image=image.short_id, force=True)
+    return bool(images)
 
 
-def remove_volumes():
-    pass
+def remove_volumes(client):
+    volumes = client.volumes.list()
+    for volume in volumes:
+        logging.info('rm %s' % volume)
+        volume.remove(force=True)
+    return bool(volumes)
 
 
-def clean_docker(containers=True, images=True, volumes=True, ):
+def clean_docker(containers=True, images=True, volumes=True):
+    logging.debug('clean docker args: containers=%s, images=%s, volumes=%s'\
+                  % (containers, images, volumes))
+    removed = False
+    client = docker.from_env()
+
     if containers:
-        remove_containers()
+        removed |= remove_containers(client)
     if images:
-        remove_images()
+        removed |= remove_images(client)
     if volumes:
-        remove_volumes()
+        removed |= remove_volumes(client)
+    return removed
 
 
 def main():
@@ -186,10 +204,16 @@ def main():
         if not docker:
             logging.info('docker api sdk required to operate'
                          ' - pip install docker')
+            return
         elif args.volumes or args.containers or args.images:
-            clean_docker(args.containers, args.images, args.volumes)
+            removed = clean_docker(args.containers, args.images, args.volumes)
+        elif input('remove all containers/images/volumes? (yes/no) ') == 'yes':
+            removed = clean_docker()
         else:
-            clean_docker()
+            logging.info('abort')
+            return
+        if not removed:
+            logging.info('nothing to remove')
 
 
 if __name__ == '__main__':
