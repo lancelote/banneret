@@ -114,7 +114,7 @@ def remove_volumes(client):
 
 
 def clean_docker(containers=True, images=True, volumes=True):
-    logging.debug('clean docker args: containers=%s, images=%s, volumes=%s'\
+    logging.debug('clean docker args: containers=%s, images=%s, volumes=%s'
                   % (containers, images, volumes))
     removed = False
     client = docker.from_env()
