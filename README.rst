@@ -24,6 +24,8 @@ supported
 usage
 -----
 
+explore options with ``-h`` flag, some examples:
+
 .. code::
 
     bnrt clean PyCharm2017.2  # to remove all PyCharm 2017.2 settings from system
