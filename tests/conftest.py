@@ -13,3 +13,8 @@ def parser():
 @pytest.fixture
 def client():
     return mock.Mock()
+
+
+@pytest.fixture
+def args():
+    return mock.Mock()

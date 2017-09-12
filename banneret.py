@@ -1,6 +1,6 @@
 #!/usr/local/bin/python3
 
-__version__ = '0.3.0'
+__version__ = '0.3.1'
 
 import argparse
 import getpass
@@ -172,6 +172,46 @@ def create_parser():
     return parser
 
 
+def run_clean_command(args):
+    try:
+        ide, version = normalize_version(args.version)
+    except ValueError:
+        logging.info('wrong or unsupported version: %s' % args.version)
+        sys.exit(1)
+    if version != '*' or input('remove all versions? (yes/no) ') == 'yes':
+        removed = remove_all(args.configs, args.caches, args.plugins,
+                             args.logs, ide + version)
+        if not removed:
+            logging.info('nothing to remove')
+    else:
+        logging.info('abort')
+        sys.exit(1)
+
+
+def run_archive_command(args):
+    try:
+        archive_project(args.project, args.target)
+    except FileNotFoundError:
+        logging.info('unknown project or target')
+        sys.exit(1)
+
+
+def run_docker_command(args):
+    if not docker:
+        logging.info('docker api sdk required to operate'
+                     ' - pip install docker')
+        sys.exit(1)
+    elif args.containers or args.images or args.volumes:
+        removed = clean_docker(args.containers, args.images, args.volumes)
+    elif input('remove all containers/images/volumes? (yes/no) ') == 'yes':
+        removed = clean_docker()
+    else:
+        logging.info('abort')
+        sys.exit(1)
+    if not removed:
+        logging.info('nothing to remove')
+
+
 def main():
     parser = create_parser()
     args = parser.parse_args()
@@ -181,39 +221,14 @@ def main():
     logging.debug('cli arguments: %s' % ', '.join(sys.argv[1:]))
 
     if args.command == 'clean':
-        try:
-            ide, version = normalize_version(args.version)
-        except ValueError:
-            logging.info('wrong or unsupported version: %s' % args.version)
-            return
-        if version != '*' or input('remove all versions? (yes/no) ') == 'yes':
-            removed = remove_all(args.configs, args.caches, args.plugins,
-                                 args.logs, ide + version)
-            if not removed:
-                logging.info('nothing to remove')
-        else:
-            logging.info('abort')
-            return
+        run_clean_command(args)
     elif args.command == 'archive':
-        try:
-            archive_project(args.project, args.target)
-        except FileNotFoundError:
-            logging.info('unknown project or target')
-            return
+        run_archive_command(args)
     elif args.command == 'docker':
-        if not docker:
-            logging.info('docker api sdk required to operate'
-                         ' - pip install docker')
-            return
-        elif args.volumes or args.containers or args.images:
-            removed = clean_docker(args.containers, args.images, args.volumes)
-        elif input('remove all containers/images/volumes? (yes/no) ') == 'yes':
-            removed = clean_docker()
-        else:
-            logging.info('abort')
-            return
-        if not removed:
-            logging.info('nothing to remove')
+        run_docker_command(args)
+    else:
+        logging.info('unknown command')
+        sys.exit(1)
 
 
 if __name__ == '__main__':
