@@ -4,6 +4,9 @@
 .. image:: https://travis-ci.org/lancelote/banneret.svg?branch=master
     :target: https://travis-ci.org/lancelote/banneret
 
+.. image:: http://jb.gg/badges/team.svg
+    :target: https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub
+
 banneret
 ========
 
