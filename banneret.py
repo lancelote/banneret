@@ -1,6 +1,6 @@
 #!/usr/local/bin/python3
 
-__version__ = '0.3.2'
+__version__ = '0.3.3'
 
 import argparse
 import getpass
@@ -176,7 +176,7 @@ def create_parser():
 
     # errors
     cmd_errors = commands.add_parser('errors', help='errors notifications')
-    cmd_errors.add_argument('version', type=str, nargs='?',
+    cmd_errors.add_argument('version', type=str,
                             help='IDE version to switch notifications')
     return parser
 

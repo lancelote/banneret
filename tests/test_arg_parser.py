@@ -132,3 +132,14 @@ class TestDocker:
         assert args.containers
         assert not args.images
         assert args.volumes
+
+
+class TestErrors:
+
+    def test_no_version(self, parser):
+        with pytest.raises(SystemExit):
+            parser.parse_args(['errors'])
+
+    def test_normal_call(self, parser):
+        args = parser.parse_args(['errors', 'pycharm'])
+        assert args.version == 'pycharm'
