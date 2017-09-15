@@ -1,6 +1,6 @@
 #!/usr/local/bin/python3
 
-__version__ = '0.3.1'
+__version__ = '0.3.2'
 
 import argparse
 import getpass
@@ -128,6 +128,10 @@ def clean_docker(containers=True, images=True, volumes=True):
     return removed
 
 
+def errors():
+    pass
+
+
 def create_parser():
     parser = argparse.ArgumentParser(description='utils for PyCharm')
     commands = parser.add_subparsers(title='commands', dest='command')
@@ -169,6 +173,11 @@ def create_parser():
                             help='remove images')
     cmd_docker.add_argument('-v', '--volumes', action='store_true',
                             help='remove volumes')
+
+    # errors
+    cmd_errors = commands.add_parser('errors', help='errors notifications')
+    cmd_errors.add_argument('version', type=str, nargs='?',
+                            help='IDE version to switch notifications')
     return parser
 
 
@@ -212,6 +221,10 @@ def run_docker_command(args):
         logging.info('nothing to remove')
 
 
+def run_errors_command(args):
+    pass
+
+
 def main():
     parser = create_parser()
     args = parser.parse_args()
@@ -226,6 +239,8 @@ def main():
         run_archive_command(args)
     elif args.command == 'docker':
         run_docker_command(args)
+    elif args.command == 'errors':
+        run_errors_command(args)
     else:
         logging.info('unknown command')
         sys.exit(1)
@@ -233,3 +248,6 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+# idea.fatal.error.notification=disabled
+# ~/Library/Preferences/PyCharm2017.3/idea.properties
