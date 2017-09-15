@@ -1,6 +1,6 @@
 #!/usr/local/bin/python3
 
-__version__ = '0.3.1'
+__version__ = '0.3.2'
 
 import argparse
 import getpass
@@ -143,7 +143,7 @@ def create_parser():
 
     # clean
     cmd_clean = commands.add_parser('clean', help='remove PyCharm settings')
-    cmd_clean.add_argument('version', type=str, nargs='?',
+    cmd_clean.add_argument('version', type=str,
                            help='IDE version to remove settings for')
     cmd_clean.add_argument('-C', '--configs', action='store_true',
                            help='remove configurations')
