@@ -140,6 +140,13 @@ class TestErrors:
         with pytest.raises(SystemExit):
             parser.parse_args(['errors'])
 
-    def test_normal_call(self, parser):
+    def test_without_flags(self, parser):
         args = parser.parse_args(['errors', 'pycharm'])
         assert args.version == 'pycharm'
+        assert not args.disable
+
+    @pytest.mark.parametrize('flag', ['-d', '--disable'])
+    def test_disable(self, parser, flag):
+        args = parser.parse_args(['errors', 'pycharm', flag])
+        assert args.version == 'pycharm'
+        assert args.disable

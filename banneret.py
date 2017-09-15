@@ -128,7 +128,7 @@ def clean_docker(containers=True, images=True, volumes=True):
     return removed
 
 
-def errors():
+def errors(disable=False):
     pass
 
 
@@ -178,6 +178,8 @@ def create_parser():
     cmd_errors = commands.add_parser('errors', help='errors notifications')
     cmd_errors.add_argument('version', type=str,
                             help='IDE version to switch notifications')
+    cmd_errors.add_argument('-d', '--disable', action='store_true',
+                            help='disable errors notifications')
     return parser
 
 
@@ -222,7 +224,17 @@ def run_docker_command(args):
 
 
 def run_errors_command(args):
-    pass
+    try:
+        ide, version = normalize_version(args.version)
+    except ValueError:
+        logging.info('wrong or unsupported version: %s' % args.version)
+        sys.exit(1)
+    switch = 'disable' if args.disable else 'enable'
+    if version != '*' or input(f'{switch} for all versions? (yes/no)') == 'yes':
+        errors(disable=args.disable)
+    else:
+        logging.info('abort')
+        sys.exit(1)
 
 
 def main():
