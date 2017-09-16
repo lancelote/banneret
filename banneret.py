@@ -43,8 +43,7 @@ def remove(path, version):
     return bool(folders)
 
 
-def remove_all(configs=False, caches=False, plugins=False, logs=False,
-               version='PyCharm*'):
+def remove_all(version, configs=False, caches=False, plugins=False, logs=False):
     logging.debug('remove args: version %s, configs %s, caches %s, plugins %s, '
                   'logs %s' % (version, configs, caches, plugins, logs))
     removed = False
@@ -128,8 +127,31 @@ def clean_docker(containers=True, images=True, volumes=True):
     return removed
 
 
-def errors(disable=False):
-    pass
+def switch_errors(folder, switch):
+    """switch exception notification for specific settings folder"""
+    config_file = os.path.join(folder, 'idea.properties')
+    try:
+        with open(config_file, 'r') as f:
+            lines = f.readlines()
+    except FileNotFoundError:
+        lines = []
+    index = 0
+    for i, line in enumerate(lines):
+        if line.startswith('idea.fatal.error.notification'):
+            index = i
+            break
+    lines[index] = 'idea.fatal.error.notification=%sd' % switch
+    with open(config_file, 'w') as f:
+        f.writelines(lines)
+
+
+def enable_errors(version, disable=False):
+    """switch exception notification for given version"""
+    switch = 'disable' if disable else 'enable'
+    logging.debug('%s errors for %s' % (switch, version))
+    folders = glob('%s/%s' % (CONFIGS, version))
+    for folder in folders:
+        switch_errors(folder, switch)
 
 
 def create_parser():
@@ -190,8 +212,8 @@ def run_clean_command(args):
         logging.info('wrong or unsupported version: %s' % args.version)
         sys.exit(1)
     if version != '*' or input('remove all versions? (yes/no) ') == 'yes':
-        removed = remove_all(args.configs, args.caches, args.plugins,
-                             args.logs, ide + version)
+        removed = remove_all(
+            ide + version, args.configs, args.caches, args.plugins, args.logs)
         if not removed:
             logging.info('nothing to remove')
     else:
@@ -223,7 +245,7 @@ def run_docker_command(args):
         logging.info('nothing to remove')
 
 
-def run_errors_command(args):
+def run_enable_errors_command(args):
     try:
         ide, version = normalize_version(args.version)
     except ValueError:
@@ -231,7 +253,7 @@ def run_errors_command(args):
         sys.exit(1)
     switch = 'disable' if args.disable else 'enable'
     if version != '*' or input(f'{switch} for all versions? (yes/no)') == 'yes':
-        errors(disable=args.disable)
+        enable_errors(version=ide + version, disable=args.disable)
     else:
         logging.info('abort')
         sys.exit(1)
@@ -252,7 +274,7 @@ def main():
     elif args.command == 'docker':
         run_docker_command(args)
     elif args.command == 'errors':
-        run_errors_command(args)
+        run_enable_errors_command(args)
     else:
         logging.info('unknown command')
         sys.exit(1)
@@ -260,6 +282,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-# idea.fatal.error.notification=disabled
-# ~/Library/Preferences/PyCharm2017.3/idea.properties
