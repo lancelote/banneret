@@ -131,3 +131,21 @@ class TestDocker:
         assert args.containers
         assert not args.images
         assert args.volumes
+
+
+class TestErrors:
+
+    def test_no_version(self, parser):
+        with pytest.raises(SystemExit):
+            parser.parse_args(['errors'])
+
+    def test_without_flags(self, parser):
+        args = parser.parse_args(['errors', 'pycharm'])
+        assert args.version == 'pycharm'
+        assert not args.disable
+
+    @pytest.mark.parametrize('flag', ['-d', '--disable'])
+    def test_disable(self, parser, flag):
+        args = parser.parse_args(['errors', 'pycharm', flag])
+        assert args.version == 'pycharm'
+        assert args.disable

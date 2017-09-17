@@ -1,6 +1,6 @@
 #!/usr/local/bin/python3
 
-__version__ = '0.3.2'
+__version__ = '0.3.3'
 
 import argparse
 import getpass
@@ -43,8 +43,7 @@ def remove(path, version):
     return bool(folders)
 
 
-def remove_all(configs=False, caches=False, plugins=False, logs=False,
-               version='PyCharm*'):
+def remove_all(version, configs=False, caches=False, plugins=False, logs=False):
     logging.debug('remove args: version %s, configs %s, caches %s, plugins %s, '
                   'logs %s' % (version, configs, caches, plugins, logs))
     removed = False
@@ -128,6 +127,37 @@ def clean_docker(containers=True, images=True, volumes=True):
     return removed
 
 
+def switch_errors(folder, switch):
+    """switch exception notification for specific settings folder"""
+    config_file = os.path.join(folder, 'idea.properties')
+    config_line = 'idea.fatal.error.notification=%sd' % switch
+    try:
+        with open(config_file, 'r') as f:
+            lines = f.readlines()
+    except FileNotFoundError:
+        logging.debug('config file was not found')
+        lines = [config_line]
+    else:
+        for i, line in enumerate(lines):
+            if line.startswith('idea.fatal.error.notification'):
+                logging.debug('config line was found')
+                lines[i] = config_line
+                break
+        lines.append(config_line)
+    with open(config_file, 'w') as f:
+        logging.info('%s errors in %s' % (switch, config_file))
+        f.writelines(lines)
+
+
+def enable_errors(version, disable=False):
+    """switch exception notification for given version"""
+    switch = 'disable' if disable else 'enable'
+    logging.debug('%s errors for %s' % (switch, version))
+    folders = glob('%s/%s' % (CONFIGS, version))
+    for folder in folders:
+        switch_errors(folder, switch)
+
+
 def create_parser():
     parser = argparse.ArgumentParser(description='utils for PyCharm')
     commands = parser.add_subparsers(title='commands', dest='command')
@@ -169,6 +199,13 @@ def create_parser():
                             help='remove images')
     cmd_docker.add_argument('-v', '--volumes', action='store_true',
                             help='remove volumes')
+
+    # errors
+    cmd_errors = commands.add_parser('errors', help='errors notifications')
+    cmd_errors.add_argument('version', type=str,
+                            help='IDE version to switch notifications')
+    cmd_errors.add_argument('-d', '--disable', action='store_true',
+                            help='disable errors notifications')
     return parser
 
 
@@ -179,8 +216,8 @@ def run_clean_command(args):
         logging.info('wrong or unsupported version: %s' % args.version)
         sys.exit(1)
     if version != '*' or input('remove all versions? (yes/no) ') == 'yes':
-        removed = remove_all(args.configs, args.caches, args.plugins,
-                             args.logs, ide + version)
+        removed = remove_all(
+            ide + version, args.configs, args.caches, args.plugins, args.logs)
         if not removed:
             logging.info('nothing to remove')
     else:
@@ -212,6 +249,20 @@ def run_docker_command(args):
         logging.info('nothing to remove')
 
 
+def run_enable_errors_command(args):
+    try:
+        ide, version = normalize_version(args.version)
+    except ValueError:
+        logging.info('wrong or unsupported version: %s' % args.version)
+        sys.exit(1)
+    switch = 'disable' if args.disable else 'enable'
+    if version != '*' or input(f'{switch} for all versions? (yes/no)') == 'yes':
+        enable_errors(version=ide + version, disable=args.disable)
+    else:
+        logging.info('abort')
+        sys.exit(1)
+
+
 def main():
     parser = create_parser()
     args = parser.parse_args()
@@ -226,6 +277,8 @@ def main():
         run_archive_command(args)
     elif args.command == 'docker':
         run_docker_command(args)
+    elif args.command == 'errors':
+        run_enable_errors_command(args)
     else:
         logging.info('unknown command')
         sys.exit(1)

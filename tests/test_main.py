@@ -2,8 +2,8 @@ from unittest import mock
 
 import pytest
 
-from banneret import main, run_clean_command, run_archive_command,\
-    run_docker_command
+from banneret import main, run_clean_command, run_archive_command, \
+    run_docker_command, run_enable_errors_command
 
 
 @mock.patch('banneret.run_docker_command')
@@ -110,4 +110,37 @@ class TestRunDockerCommand:
         with pytest.raises(SystemExit):
             run_docker_command(args)
         mock_clean_docker.assert_not_called()
+        mock_input.assert_called_once()
+
+
+@mock.patch('banneret.input')
+@mock.patch('banneret.enable_errors')
+class TestRunErrorsCommand:
+
+    def test_wrong_version(self, mock_enable_errors, mock_input, args):
+        args.version = 'abc'
+        with pytest.raises(SystemExit):
+            run_enable_errors_command(args)
+            mock_enable_errors.assert_not_called()
+        mock_input.assert_not_called()
+
+    def test_correct_version(self, mock_enable_errors, mock_input, args):
+        args.version = 'pycharm2017.3'
+        run_enable_errors_command(args)
+        mock_enable_errors.assert_called_once()
+        mock_input.assert_not_called()
+
+    def test_switch_for_all(self, mock_enable_errors, mock_input, args):
+        args.version = 'pycharm'
+        mock_input.return_value = 'yes'
+        run_enable_errors_command(args)
+        mock_enable_errors.assert_called_once()
+        mock_input.assert_called_once()
+
+    def test_switch_for_all_abort(self, mock_enable_errors, mock_input, args):
+        args.version = 'pycharm'
+        mock_input.return_value = 'no'
+        with pytest.raises(SystemExit):
+            run_enable_errors_command(args)
+        mock_enable_errors.assert_not_called()
         mock_input.assert_called_once()
