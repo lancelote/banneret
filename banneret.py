@@ -155,7 +155,7 @@ def enable_errors(version, path=CONFIGS, disable=False):
     folders = glob('%s/%s' % (path, version))
     for folder in folders:
         enable_error(folder, switch)
-    else:
+    if not folders:
         raise FileNotFoundError
 
 
@@ -260,6 +260,7 @@ def run_enable_errors_command(args):
     if version != '*' or input(f'{switch} for all versions? (yes/no)') == 'yes':
         try:
             enable_errors(version=ide + version, disable=args.disable)
+            logging.info('restart PyCharm to apply changes')
         except FileNotFoundError:
             logging.info('settings folder was not - try to start PyCharm once')
             sys.exit(1)
