@@ -27,4 +27,4 @@ class TestEnableErrors:
         calls = [call(join(base_path, 'PyCharm2016.3'), switch),
                  call(join(base_path, 'PyCharm2017.2'), switch),
                  call(join(base_path, 'PyCharmCE2017.2'), switch)]
-        mock_enable_error.assert_has_calls(calls)
+        mock_enable_error.assert_has_calls(calls, any_order=True)
