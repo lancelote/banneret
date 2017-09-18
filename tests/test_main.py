@@ -144,3 +144,12 @@ class TestRunErrorsCommand:
             run_enable_errors_command(args)
         mock_enable_errors.assert_not_called()
         mock_input.assert_called_once()
+
+    def test_no_settings_was_found(self, mock_enable_errors, mock_input, args):
+        mock_enable_errors.side_effect = FileNotFoundError
+        args.version = 'pycharm'
+        mock_input.return_value = 'yes'
+        with pytest.raises(SystemExit):
+            run_enable_errors_command(args)
+        mock_enable_errors.assert_called_once()
+        mock_input.assert_called_once()

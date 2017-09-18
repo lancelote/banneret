@@ -127,7 +127,7 @@ def clean_docker(containers=True, images=True, volumes=True):
     return removed
 
 
-def switch_errors(folder, switch):
+def enable_error(folder, switch):
     """switch exception notification for specific settings folder"""
     config_file = os.path.join(folder, 'idea.properties')
     config_line = 'idea.fatal.error.notification=%sd' % switch
@@ -145,17 +145,18 @@ def switch_errors(folder, switch):
                 break
         lines.append(config_line)
     with open(config_file, 'w') as f:
-        logging.info('%s errors in %s' % (switch, config_file))
+        logging.info('%s notifications in %s' % (switch, config_file))
         f.writelines(lines)
 
 
-def enable_errors(version, disable=False):
+def enable_errors(version, path=CONFIGS, disable=False):
     """switch exception notification for given version"""
     switch = 'disable' if disable else 'enable'
-    logging.debug('%s errors for %s' % (switch, version))
-    folders = glob('%s/%s' % (CONFIGS, version))
+    folders = glob('%s/%s' % (path, version))
     for folder in folders:
-        switch_errors(folder, switch)
+        enable_error(folder, switch)
+    else:
+        raise FileNotFoundError
 
 
 def create_parser():
@@ -257,7 +258,11 @@ def run_enable_errors_command(args):
         sys.exit(1)
     switch = 'disable' if args.disable else 'enable'
     if version != '*' or input(f'{switch} for all versions? (yes/no)') == 'yes':
-        enable_errors(version=ide + version, disable=args.disable)
+        try:
+            enable_errors(version=ide + version, disable=args.disable)
+        except FileNotFoundError:
+            logging.info('settings folder was not - try to start PyCharm once')
+            sys.exit(1)
     else:
         logging.info('abort')
         sys.exit(1)
