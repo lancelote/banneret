@@ -18,3 +18,8 @@ def client():
 @pytest.fixture
 def args():
     return mock.Mock()
+
+
+@pytest.fixture
+def base_path(tmpdir):
+    return tmpdir.mkdir('base_path')
