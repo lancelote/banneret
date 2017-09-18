@@ -203,7 +203,7 @@ def create_parser():
                             help='remove volumes')
 
     # errors
-    cmd_errors = commands.add_parser('errors', help='errors notifications')
+    cmd_errors = commands.add_parser('errors', help='enable notifications')
     cmd_errors.add_argument('version', type=str,
                             help='IDE version to switch notifications')
     cmd_errors.add_argument('-d', '--disable', action='store_true',
