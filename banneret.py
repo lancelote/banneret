@@ -1,6 +1,6 @@
 #!/usr/local/bin/python3
 
-__version__ = '0.4.0'
+__version__ = '0.4.1'
 
 import argparse
 import getpass
