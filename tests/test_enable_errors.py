@@ -54,16 +54,21 @@ class TestEnableError:
         enable_error(base_path, switch)
         self.check_file(base_path, 'first\nsecond\n' + config_line)
 
-    @pytest.mark.parametrize('switch', ['enable', 'disable'])
-    def test_config_file_with_line_enable(self, base_path, switch):
+    def test_config_file_with_line_enable(self, base_path):
         self.create_file(base_path, 'idea.fatal.error.notification=enabled')
-        config_line = 'idea.fatal.error.notification=%sd\n' % switch
-        enable_error(base_path, switch)
+        config_line = 'idea.fatal.error.notification=disabled\n'
+        enable_error(base_path, 'disable')
+        self.check_file(base_path, config_line)
+
+    def test_config_file_with_line_disable(self, base_path):
+        self.create_file(base_path, 'idea.fatal.error.notification=disabled')
+        config_line = 'idea.fatal.error.notification=enabled\n'
+        enable_error(base_path, 'enable')
         self.check_file(base_path, config_line)
 
     @pytest.mark.parametrize('switch', ['enable', 'disable'])
-    def test_config_file_with_line_disable(self, base_path, switch):
-        self.create_file(base_path, 'idea.fatal.error.notification=disabled')
-        config_line = 'idea.fatal.error.notification=%sd\n' % switch
-        enable_error(base_path, switch)
-        self.check_file(base_path, config_line)
+    def test_nothing_to_change(self, base_path, switch):
+        config_line = 'idea.fatal.error.notification=%sd' % switch
+        self.create_file(base_path, config_line)
+        with pytest.raises(SystemExit):
+            enable_error(base_path, switch)

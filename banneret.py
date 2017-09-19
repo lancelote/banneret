@@ -129,6 +129,8 @@ def clean_docker(containers=True, images=True, volumes=True):
 
 def enable_error(folder, switch):
     """switch exception notification for specific settings folder"""
+    option = slice(0, 29)
+    value = slice(30, None)
     config_file = os.path.join(folder, 'idea.properties')
     config_line = 'idea.fatal.error.notification=%sd\n' % switch
     try:
@@ -139,10 +141,14 @@ def enable_error(folder, switch):
         lines = [config_line]
     else:
         for i, line in enumerate(lines):
-            if line.startswith('idea.fatal.error.notification'):
-                logging.debug('config line was found')
-                lines[i] = config_line
-                break
+            if line[option] == 'idea.fatal.error.notification':
+                if switch in line[value]:
+                    logging.info('already %sd' % switch)
+                    sys.exit(1)
+                else:
+                    logging.debug('config line was found')
+                    lines[i] = config_line
+                    break
         else:
             lines.append(config_line)
     with open(config_file, 'w') as f:
