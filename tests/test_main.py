@@ -66,6 +66,14 @@ class TestRunCleanCommand:
         mock_remove_all.assert_not_called()
         mock_input.assert_called_once()
 
+    def test_nothing_to_remove(self, mock_remove_all, mock_input, args):
+        args.version = 'pycharm2017.2'
+        mock_remove_all.return_value = False
+        with pytest.raises(SystemExit):
+            run_clean_command(args)
+        mock_remove_all.assert_called_once()
+        mock_input.assert_not_called()
+
 
 @mock.patch('banneret.archive_project')
 class TestRunArchiveCommand:

@@ -228,6 +228,7 @@ def run_clean_command(args):
             ide + version, args.configs, args.caches, args.plugins, args.logs)
         if not removed:
             logging.info('nothing to remove')
+            sys.exit(1)
     else:
         logging.info('abort')
         sys.exit(1)
