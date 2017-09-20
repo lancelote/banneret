@@ -1,6 +1,6 @@
 #!/usr/local/bin/python3
 
-__version__ = '0.4.1'
+__version__ = '0.4.2'
 
 import argparse
 import getpass
@@ -166,57 +166,6 @@ def enable_errors(version, path=CONFIGS, disable=False):
         raise FileNotFoundError
 
 
-def create_parser():
-    parser = argparse.ArgumentParser(description='utils for PyCharm')
-    commands = parser.add_subparsers(title='commands', dest='command')
-    commands.required = True
-
-    # version
-    parser.add_argument('--version', action='version',
-                        version='%(prog)s ' + __version__)
-
-    # verbose
-    parser.add_argument('-v', '--verbose', action='store_true',
-                        help='verbose level')
-
-    # clean
-    cmd_clean = commands.add_parser('clean', help='remove PyCharm settings')
-    cmd_clean.add_argument('version', type=str,
-                           help='IDE version to remove settings for')
-    cmd_clean.add_argument('-C', '--configs', action='store_true',
-                           help='remove configurations')
-    cmd_clean.add_argument('-c', '--caches', action='store_true',
-                           help='remove caches')
-    cmd_clean.add_argument('-p', '--plugins', action='store_true',
-                           help='remove plugins')
-    cmd_clean.add_argument('-l', '--logs', action='store_true',
-                           help='remove logs')
-
-    # archive
-    cmd_archive = commands.add_parser('archive', help='archive current project')
-    cmd_archive.add_argument('-p', '--project', default=PWD,
-                             help='project to be archived')
-    cmd_archive.add_argument('-t', '--target', default=f'{HOME}/Desktop',
-                             help='where archive will be placed')
-
-    # docker
-    cmd_docker = commands.add_parser('docker', help='removes docker artifacts')
-    cmd_docker.add_argument('-c', '--containers', action='store_true',
-                            help='remove containers')
-    cmd_docker.add_argument('-i', '--images', action='store_true',
-                            help='remove images')
-    cmd_docker.add_argument('-v', '--volumes', action='store_true',
-                            help='remove volumes')
-
-    # errors
-    cmd_errors = commands.add_parser('errors', help='enable notifications')
-    cmd_errors.add_argument('version', type=str,
-                            help='IDE version to switch notifications')
-    cmd_errors.add_argument('-d', '--disable', action='store_true',
-                            help='disable errors notifications')
-    return parser
-
-
 def run_clean_command(args):
     try:
         ide, version = normalize_version(args.version)
@@ -275,6 +224,61 @@ def run_enable_errors_command(args):
     else:
         logging.info('abort')
         sys.exit(1)
+
+
+def create_parser():
+    parser = argparse.ArgumentParser(description='utils for PyCharm')
+    commands = parser.add_subparsers(title='commands', dest='command')
+    commands.required = True
+
+    # parent parsers
+    # ide version
+    ide_version = argparse.ArgumentParser(add_help=False)
+    ide_version.add_argument('version', type=str,
+                             help='IDE version to remove settings for')
+
+    # version
+    parser.add_argument('--version', action='version',
+                        version='%(prog)s ' + __version__)
+
+    # verbose
+    parser.add_argument('-v', '--verbose', action='store_true',
+                        help='verbose level')
+
+    # clean
+    cmd_clean = commands.add_parser('clean', parents=[ide_version],
+                                    help='remove PyCharm settings')
+    cmd_clean.add_argument('-C', '--configs', action='store_true',
+                           help='remove configurations')
+    cmd_clean.add_argument('-c', '--caches', action='store_true',
+                           help='remove caches')
+    cmd_clean.add_argument('-p', '--plugins', action='store_true',
+                           help='remove plugins')
+    cmd_clean.add_argument('-l', '--logs', action='store_true',
+                           help='remove logs')
+
+    # archive
+    cmd_archive = commands.add_parser('archive', help='archive current project')
+    cmd_archive.add_argument('-p', '--project', default=PWD,
+                             help='project to be archived')
+    cmd_archive.add_argument('-t', '--target', default=f'{HOME}/Desktop',
+                             help='where archive will be placed')
+
+    # docker
+    cmd_docker = commands.add_parser('docker', help='removes docker artifacts')
+    cmd_docker.add_argument('-c', '--containers', action='store_true',
+                            help='remove containers')
+    cmd_docker.add_argument('-i', '--images', action='store_true',
+                            help='remove images')
+    cmd_docker.add_argument('-v', '--volumes', action='store_true',
+                            help='remove volumes')
+
+    # errors
+    cmd_errors = commands.add_parser('errors', parents=[ide_version],
+                                     help='enable notifications')
+    cmd_errors.add_argument('-d', '--disable', action='store_true',
+                            help='disable errors notifications')
+    return parser
 
 
 def main():
