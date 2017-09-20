@@ -270,7 +270,7 @@ def run_enable_errors_command(args):
             enable_errors(version=ide + version, disable=args.disable)
             logging.info('restart PyCharm to apply changes')
         except FileNotFoundError:
-            logging.info('settings folder was not - try to start PyCharm once')
+            logging.info('no settings folder - try to start PyCharm once')
             sys.exit(1)
     else:
         logging.info('abort')
