@@ -38,6 +38,15 @@ if you just want to report a bug or suggest a feature - feel free to do it via `
 
 I'll be as fast as possible to answer to your request
 
+development workflow
+--------------------
+
+- weekly release schedule for major versions (0.x.0)
+- "when there's a significant fix done" schedule for minor versions (0.0.x)
+- there's an agile-like board_ for each major release with 5 or more tickets
+- each major release has it's own milestone_ to track release progress
+- all tasks and plans are covered by `issue tracker`_
+
 contacts
 --------
 
@@ -45,3 +54,5 @@ feel free to drop me an `email`_ or use `issue tracker`_ to contact me
 
 .. _email: mailto:karateev.pavel@ya.ru
 .. _issue tracker: https://github.com/lancelote/banneret/issues
+.. _board: https://github.com/lancelote/banneret/projects
+.. _milestone: https://github.com/lancelote/banneret/milestones
