@@ -26,7 +26,7 @@ for the first contribution:
 - clone this repository and check out to your machine
 - create virtual environment, activate it and install all requirements with ``make deps``
 - run tests with ``make test``
-- install ``banneret`` on your machine with ``make deploy`` and check if it's working
+- install ``banneret`` on your machine with ``make install`` and check if it's working
 - implement your changes, commit and push it to your clone repository
 - create a pull request to original ``banneret`` repository
 - wait for me to review your change
