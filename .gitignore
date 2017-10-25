@@ -9,3 +9,6 @@ bnrt
 
 # Python byte code
 __pycache__/
+
+# virtual environment
+.env/
