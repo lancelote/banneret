@@ -26,12 +26,14 @@ CACHES = f'{HOME}/Library/Caches'
 PLUGINS = f'{HOME}/Library/Application Support'
 LOGS = f'{HOME}/Library/Logs'
 
-SUPPORTED_IDE = {
+SUPPORTED_IDE_ALIASES = {
     'pycharm': 'PyCharm',
     'pycharmce': 'PyCharmCE',
     'intellijidea': 'IntelliJIdea',
     'idea': 'IntelliJIdea',
-    'intellij': 'IntelliJIdea'
+    'intellij': 'IntelliJIdea',
+    'ideac': 'IdeaIC',
+    'ideaic': 'IdeaIC',
 }
 
 
@@ -79,10 +81,10 @@ def archive_project(project, target, projects=PROJECTS):
 def normalize_version(version):
     logging.debug('normalize: version %s' % version)
     match = re.match(r'(?P<ide>[a-zA-Z]+)(?P<version>[\d.]+)?', version)
-    if not match or match.group('ide').lower() not in SUPPORTED_IDE:
+    if not match or match.group('ide').lower() not in SUPPORTED_IDE_ALIASES:
         raise ValueError
     else:
-        ide = SUPPORTED_IDE[match.group('ide').lower()]
+        ide = SUPPORTED_IDE_ALIASES[match.group('ide').lower()]
         version = match.group('version') or '*'
         logging.debug('normalize result: ide %s, version %s' % (ide, version))
         return ide, version
