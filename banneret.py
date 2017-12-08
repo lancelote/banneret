@@ -101,7 +101,7 @@ def remove_containers(client):
 def remove_images(client):
     images = client.images.list()
     for image in images:
-        logging.info('rm %s' % images)
+        logging.info('rm %s' % image)
         client.images.remove(image=image.short_id, force=True)
     return bool(images)
 
