@@ -10,6 +10,9 @@ help:
 	@echo "uninstall"
 	@echo "    uninstall banneret"
 
+pipenv:
+	pip install --user pipenv
+
 update:
 	pipenv update
 
