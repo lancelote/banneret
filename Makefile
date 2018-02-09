@@ -1,24 +1,23 @@
 help:
-	@echo "install"
-	@echo "    make and copy executable to /usr/local/bin on macOS"
-	@echo "deps"
-	@echo "    install all dependencies (don't forget to activate venv!)"
+	@echo "pipenv"
+	@echo "    install pipenv for current user"
+	@echo "update"
+	@echo "    reinstall all required packages"
 	@echo "test"
 	@echo "    run all the tests"
+	@echo "install"
+	@echo "    install banneret for development"
 	@echo "uninstall"
-	@echo "    removes banneret executable from /usr/local/bin on macOS"
+	@echo "    uninstall banneret"
 
-deps:
-	pip install -r requirements.txt
+update:
+	pipenv update
 
 test:
 	python -m pytest tests
 
 install:
-	cp banneret.py bnrt
-	chmod +x bnrt
-	cp bnrt /usr/local/bin/
-	rm bnrt
+	pipenv install '-e .' --dev
 
 uninstall:
-	rm /usr/local/bin/bnrt
+	pipenv uninstall banneret

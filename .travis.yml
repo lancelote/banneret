@@ -4,7 +4,8 @@ python:
   - '3.6'
 
 install:
-  - make deps
+  - make pipenv
+  - make update
 
 script:
   - make test
