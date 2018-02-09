@@ -1,6 +1,4 @@
 help:
-	@echo "pipenv"
-	@echo "    install pipenv for current user"
 	@echo "update"
 	@echo "    reinstall all required packages"
 	@echo "test"
@@ -9,9 +7,6 @@ help:
 	@echo "    install banneret for development"
 	@echo "uninstall"
 	@echo "    uninstall banneret"
-
-pipenv:
-	pip install --user pipenv
 
 update:
 	pipenv update
