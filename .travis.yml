@@ -5,7 +5,7 @@ python:
 
 install:
   - pip install pipenv
-  - make update
+  - make install
 
 script:
   - make test
