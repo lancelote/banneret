@@ -4,7 +4,7 @@ help:
 	@echo "test"
 	@echo "    run all the tests"
 	@echo "install"
-	@echo "    install banneret for development"
+	@echo "    install banneret and dependencies for development"
 	@echo "uninstall"
 	@echo "    uninstall banneret"
 
@@ -15,7 +15,7 @@ test:
 	python -m pytest tests
 
 install:
-	pipenv install '-e .' --dev
+	pipenv install --dev
 
 uninstall:
 	pipenv uninstall banneret
