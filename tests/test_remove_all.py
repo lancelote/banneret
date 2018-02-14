@@ -1,32 +1,48 @@
-try:
-    from unittest import mock
-except ImportError:
-    import mock
+import pytest
 
 from banneret.main import remove_all, CONFIGS, CACHES, PLUGINS, LOGS
 
 
-@mock.patch('banneret.main.remove')
+@pytest.fixture(name='mock_remove')
+def fixture_mock_remove(mocker):
+    mock_remove = mocker.patch('banneret.main.remove')
+    yield mock_remove
+
+
+@pytest.fixture(name='_mock_win32')
+def fixture_mock_win32(mocker):
+    mocker.patch('sys.platform', 'win32')
+    yield
+
+
+@pytest.fixture(name='_mock_linux')
+def fixture_mock_linux(mocker):
+    mocker.patch('sys.platform', 'linux')
+    yield
+
+
+@pytest.fixture(name='_mock_darwin')
+def fixture_mock_darwin(mocker):
+    mocker.patch('sys.platform', 'darwin')
+    yield
+
+
 class TestOSSupport:
 
-    @mock.patch('sys.platform', 'win32')
-    def test_windows_is_not_supported(self, mock_remove):
+    def test_windows_is_not_supported(self, mock_remove, _mock_win32):
         remove_all('PyCharm*')
         mock_remove.assert_not_called()
 
-    @mock.patch('sys.platform', 'linux')
-    def test_linux_is_not_supported(self, mock_remove):
+    def test_linux_is_not_supported(self, mock_remove, _mock_linux):
         remove_all('PyCharm*')
         mock_remove.assert_not_called()
 
-    @mock.patch('sys.platform', 'darwin')
-    def test_mac_is_supported(self, mock_remove):
+    def test_mac_is_supported(self, mock_remove, _mock_darwin):
         remove_all('PyCharm*')
         assert mock_remove.call_count == 4
 
 
-@mock.patch('sys.platform', 'darwin')
-@mock.patch('banneret.main.remove')
+@pytest.mark.usefixtures('_mock_darwin')
 class TestArgumentsLogic:
 
     def test_remove_all(self, mock_remove):
@@ -50,8 +66,7 @@ class TestArgumentsLogic:
         mock_remove.assert_called_once_with(LOGS, 'PyCharm*')
 
 
-@mock.patch('sys.platform', 'darwin')
-@mock.patch('banneret.main.remove')
+@pytest.mark.usefixtures('_mock_darwin')
 class TestReturnStatus:
 
     def test_nothing_was_removed(self, mock_remove):

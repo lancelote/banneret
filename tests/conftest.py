@@ -1,5 +1,3 @@
-from unittest import mock
-
 import pytest
 
 from banneret.main import create_parser
@@ -11,13 +9,13 @@ def parser():
 
 
 @pytest.fixture
-def client():
-    return mock.Mock()
+def client(mocker):
+    return mocker.Mock()
 
 
 @pytest.fixture
-def args():
-    return mock.Mock()
+def args(mocker):
+    return mocker.Mock()
 
 
 @pytest.fixture
