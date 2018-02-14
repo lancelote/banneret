@@ -1,15 +1,18 @@
-from unittest import mock
+try:
+    from unittest import mock
+except IndexError:
+    import mock
 
 import pytest
 
-from banneret import main, run_clean_command, run_archive_command, \
+from banneret.main import main, run_clean_command, run_archive_command, \
     run_docker_command, run_enable_errors_command
 
 
-@mock.patch('banneret.run_docker_command')
-@mock.patch('banneret.run_archive_command')
-@mock.patch('banneret.run_clean_command')
-@mock.patch('banneret.create_parser')
+@mock.patch('banneret.main.run_docker_command')
+@mock.patch('banneret.main.run_archive_command')
+@mock.patch('banneret.main.run_clean_command')
+@mock.patch('banneret.main.create_parser')
 class TestRunCommand:
 
     def test_clean(self, mock_parser, mock_rcc, mock_rac, mock_rdc):
@@ -34,8 +37,8 @@ class TestRunCommand:
         mock_rdc.assert_called_once()
 
 
-@mock.patch('banneret.input')
-@mock.patch('banneret.remove_all')
+@mock.patch('banneret.main.input')
+@mock.patch('banneret.main.remove_all')
 class TestRunCleanCommand:
 
     def test_wrong_version(self, mock_remove_all, mock_input, args):
@@ -75,7 +78,7 @@ class TestRunCleanCommand:
         mock_input.assert_not_called()
 
 
-@mock.patch('banneret.archive_project')
+@mock.patch('banneret.main.archive_project')
 class TestRunArchiveCommand:
 
     def test_unknown_project_or_target(self, mock_archive_project, args):
@@ -89,10 +92,10 @@ class TestRunArchiveCommand:
         mock_archive_project.assert_called_once()
 
 
-@mock.patch('banneret.clean_docker')
+@mock.patch('banneret.main.clean_docker')
 class TestRunDockerCommand:
 
-    @mock.patch('banneret.docker', None)
+    @mock.patch('banneret.main.docker', None)
     def test_docker_is_not_installed(self, mock_clean_docker, args):
         with pytest.raises(SystemExit):
             run_docker_command(args)
@@ -103,7 +106,7 @@ class TestRunDockerCommand:
         run_docker_command(args)
         mock_clean_docker.assert_called_with(False, True, False)
 
-    @mock.patch('banneret.input')
+    @mock.patch('banneret.main.input')
     def test_remove_everything(self, mock_input, mock_clean_docker, args):
         args.containers, args.images, args.volumes = False, False, False
         mock_input.return_value = 'yes'
@@ -111,7 +114,7 @@ class TestRunDockerCommand:
         mock_clean_docker.assert_called_with()
         mock_input.assert_called_once()
 
-    @mock.patch('banneret.input')
+    @mock.patch('banneret.main.input')
     def test_remove_everything_abort(self, mock_input, mock_clean_docker, args):
         args.containers, args.images, args.volumes = False, False, False
         mock_input.return_value = 'no'
@@ -121,8 +124,8 @@ class TestRunDockerCommand:
         mock_input.assert_called_once()
 
 
-@mock.patch('banneret.input')
-@mock.patch('banneret.enable_errors')
+@mock.patch('banneret.main.input')
+@mock.patch('banneret.main.enable_errors')
 class TestRunErrorsCommand:
 
     def test_wrong_version(self, mock_enable_errors, mock_input, args):

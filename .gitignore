@@ -12,3 +12,6 @@ banneret.egg-info/
 
 # macOS
 .DS_Store
+
+# tox
+.tox/

@@ -2,7 +2,7 @@ from unittest import mock
 
 import pytest
 
-from banneret import create_parser
+from banneret.main import create_parser
 
 
 @pytest.fixture

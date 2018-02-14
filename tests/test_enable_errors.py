@@ -1,13 +1,17 @@
-from unittest import mock
-from unittest.mock import call
+try:
+    from unittest import mock
+    from unittest.mock import call
+except IndexError:
+    import mock
+    from mock import call
 from os.path import join
 
 import pytest
 
-from banneret import enable_error, enable_errors
+from banneret.main import enable_error, enable_errors
 
 
-@mock.patch('banneret.enable_error')
+@mock.patch('banneret.main.enable_error')
 class TestEnableErrors:
 
     @pytest.mark.parametrize('disable', [True, False])

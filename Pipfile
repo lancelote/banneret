@@ -9,6 +9,7 @@ name = "pypi"
 
 pytest = "*"
 "e1839a8" = {path = ".", editable = true}
+tox = "*"
 
 
 [packages]

@@ -1,5 +1,3 @@
-__version__ = '0.4.4'
-
 import argparse
 import getpass
 import logging
@@ -8,6 +6,8 @@ import re
 import sys
 from glob import glob
 from shutil import rmtree, make_archive
+
+from banneret.version import __version__
 
 try:
     import docker

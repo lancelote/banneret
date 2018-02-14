@@ -1,13 +1,16 @@
-from unittest import mock
+try:
+    from unittest import mock
+except IndexError:
+    import mock
 from unittest.mock import call
 
-from banneret import clean_docker, remove_containers, remove_images, \
+from banneret.main import clean_docker, remove_containers, remove_images, \
     remove_volumes
 
 
-@mock.patch('banneret.remove_volumes')
-@mock.patch('banneret.remove_images')
-@mock.patch('banneret.remove_containers')
+@mock.patch('banneret.main.remove_volumes')
+@mock.patch('banneret.main.remove_images')
+@mock.patch('banneret.main.remove_containers')
 class TestCleanDocker:
 
     def test_remove_everything(self, mock_rc, mock_ri, mock_rv):

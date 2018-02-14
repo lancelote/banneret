@@ -1,9 +1,12 @@
-from unittest import mock
+try:
+    from unittest import mock
+except ImportError:
+    import mock
 
-from banneret import remove_all, CONFIGS, CACHES, PLUGINS, LOGS
+from banneret.main import remove_all, CONFIGS, CACHES, PLUGINS, LOGS
 
 
-@mock.patch('banneret.remove')
+@mock.patch('banneret.main.remove')
 class TestOSSupport:
 
     @mock.patch('sys.platform', 'win32')
@@ -23,7 +26,7 @@ class TestOSSupport:
 
 
 @mock.patch('sys.platform', 'darwin')
-@mock.patch('banneret.remove')
+@mock.patch('banneret.main.remove')
 class TestArgumentsLogic:
 
     def test_remove_all(self, mock_remove):
@@ -48,7 +51,7 @@ class TestArgumentsLogic:
 
 
 @mock.patch('sys.platform', 'darwin')
-@mock.patch('banneret.remove')
+@mock.patch('banneret.main.remove')
 class TestReturnStatus:
 
     def test_nothing_was_removed(self, mock_remove):

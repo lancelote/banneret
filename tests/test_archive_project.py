@@ -1,7 +1,7 @@
 from os.path import join
 from shutil import unpack_archive
 
-from banneret import archive_project
+from banneret.main import archive_project
 
 
 def test_folder_is_correctly_archived(tmpdir):

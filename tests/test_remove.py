@@ -1,4 +1,4 @@
-from banneret import remove
+from banneret.main import remove
 
 
 def test_removes_correct_dir(base_path):

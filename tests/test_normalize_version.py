@@ -1,6 +1,6 @@
 import pytest
 
-from banneret import normalize_version
+from banneret.main import normalize_version
 
 
 def test_ide_is_not_supported():

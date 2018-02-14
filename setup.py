@@ -1,8 +1,13 @@
+import os
 from distutils.core import setup
 
 from setuptools import find_packages
 
-from banneret import __version__
+__version__ = 'unknown'
+version_path = os.path.join(os.path.split(__file__)[0], 'banneret/version.py')
+
+with open(version_path) as version_file:
+    exec(version_file.read())
 
 URL = 'https://github.com/lancelote/banneret'
 
@@ -18,7 +23,7 @@ setup(
     keywords=['pycharm', 'cli'],
     entry_points={
         'console_scripts': [
-            'bnrt = banneret:main'
+            'bnrt = banneret.main:main'
         ]
     },
     install_requires=['docker'],

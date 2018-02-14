@@ -1,6 +1,6 @@
 import pytest
 
-from banneret import PWD, HOME
+from banneret.main import PWD, HOME
 
 
 class TestGeneral:
