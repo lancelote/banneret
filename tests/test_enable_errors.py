@@ -1,5 +1,3 @@
-from os.path import join
-
 import pytest
 
 from banneret.main import enable_error, enable_errors
@@ -15,7 +13,7 @@ class TestEnableErrors:
 
     @pytest.mark.parametrize('disable', [True, False])
     def test_no_settings_folder(self, mock_enable_error, base_path, disable):
-        with pytest.raises(FileNotFoundError):
+        with pytest.raises(IOError):
             enable_errors('PyCharm2017.1', path=base_path, disable=disable)
         mock_enable_error.assert_not_called()
 
@@ -25,9 +23,9 @@ class TestEnableErrors:
             base_path.mkdir(folder)
         enable_errors('PyCharm*', path=base_path, disable=disable)
         switch = 'disable' if disable else 'enable'
-        calls = [mocker.call(join(base_path, 'PyCharm2016.3'), switch),
-                 mocker.call(join(base_path, 'PyCharm2017.2'), switch),
-                 mocker.call(join(base_path, 'PyCharmCE2017.2'), switch)]
+        calls = [mocker.call(base_path.join('PyCharm2016.3'), switch),
+                 mocker.call(base_path.join('PyCharm2017.2'), switch),
+                 mocker.call(base_path.join('PyCharmCE2017.2'), switch)]
         mock_enable_error.assert_has_calls(calls, any_order=True)
 
 
@@ -35,19 +33,19 @@ class TestEnableError:
 
     @staticmethod
     def create_file(path, content):
-        with open(join(path, 'idea.properties'), 'w') as config_file:
+        with path.join('idea.properties').open('w') as config_file:
             config_file.write(content)
 
     @staticmethod
     def check_file(path, expected):
-        with open(join(path, 'idea.properties'), 'r') as config_file:
+        with path.join('idea.properties').open('r') as config_file:
             assert config_file.read() == expected
 
     @pytest.mark.parametrize('switch', ['enable', 'disable'])
     def test_config_file_was_not_found(self, base_path, switch):
         config_line = 'idea.fatal.error.notification=%sd\n' % switch
         enable_error(base_path, switch)
-        with open(join(base_path, 'idea.properties')) as config_file:
+        with base_path.join('idea.properties').open() as config_file:
             assert config_file.read() == config_line
 
     @pytest.mark.parametrize('switch', ['enable', 'disable'])

@@ -1,5 +1,4 @@
-from os.path import join
-from shutil import unpack_archive
+from zipfile import ZipFile
 
 from banneret.main import archive_project
 
@@ -8,15 +7,16 @@ def test_folder_is_correctly_archived(tmpdir):
     project = tmpdir.mkdir('project')
     target = tmpdir.mkdir('target')
     unpack_target = tmpdir.mkdir('unpack_target')
-    archive = join(target, 'project.zip')
-    with open(join(project, 'sample.py'), 'w'):
+    archive = target.join('project.zip')
+    with project.join('sample.py').open('w'):
         pass
 
     archive_project(project, target)
-    unpack_archive(archive, unpack_target, format='zip')
+    with ZipFile(archive.strpath) as file_archive:
+        file_archive.extractall(unpack_target.strpath)
 
     assert target.listdir() == [archive]
-    assert unpack_target.listdir() == [join(unpack_target, 'sample.py')]
+    assert unpack_target.listdir() == [unpack_target.join('sample.py')]
 
 
 def test_only_project_name_is_passed(tmpdir):
@@ -24,13 +24,14 @@ def test_only_project_name_is_passed(tmpdir):
     project = projects.mkdir('project')
     target = tmpdir.mkdir('target')
     unpack_target = tmpdir.mkdir('unpack_target')
-    archive = join(target, 'project.zip')
+    archive = target.join('project.zip')
 
-    with open(join(project, 'sample.py'), 'w'):
+    with project.join('sample.py').open('w'):
         pass
 
     archive_project('project', target, projects)
-    unpack_archive(archive, unpack_target, format='zip')
+    with ZipFile(archive.strpath) as file_archive:
+        file_archive.extractall(unpack_target.strpath)
 
     assert target.listdir() == [archive]
-    assert unpack_target.listdir() == [join(unpack_target, 'sample.py')]
+    assert unpack_target.listdir() == [unpack_target.join('sample.py')]

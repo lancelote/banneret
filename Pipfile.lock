@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "122522f1a833e7356abff02f1d8ceea3d0c2168e5cf4166ba8eb7b284e9f9ee2"
+            "sha256": "09063db7aec25e3987a3b435fb97a3cac5e9a0d44c2168d4f82f93bee70f0317"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
@@ -57,10 +57,10 @@
         },
         "docker-pycreds": {
             "hashes": [
-                "sha256:58d2688f92de5d6f1a6ac4fe25da461232f0e0a4c1212b93b256b046b2d714a9",
-                "sha256:93833a2cf280b7d8abbe1b8121530413250c6cd4ffed2c1cf085f335262f7348"
+                "sha256:408ae6ec2b97345e02cbb3a05e0055443a27969e5b61d6773c733b534a40845b",
+                "sha256:c7ab85de2894baff6ee8f15160cbbfa2fd3a04e56f0372c5793d24060687b299"
             ],
-            "version": "==0.2.1"
+            "version": "==0.2.2"
         },
         "idna": {
             "hashes": [
@@ -143,13 +143,17 @@
         },
         "docker-pycreds": {
             "hashes": [
-                "sha256:58d2688f92de5d6f1a6ac4fe25da461232f0e0a4c1212b93b256b046b2d714a9",
-                "sha256:93833a2cf280b7d8abbe1b8121530413250c6cd4ffed2c1cf085f335262f7348"
+                "sha256:408ae6ec2b97345e02cbb3a05e0055443a27969e5b61d6773c733b534a40845b",
+                "sha256:c7ab85de2894baff6ee8f15160cbbfa2fd3a04e56f0372c5793d24060687b299"
             ],
-            "version": "==0.2.1"
+            "version": "==0.2.2"
         },
         "e1839a8": {
             "editable": true,
+            "extras": [
+                "test",
+                "docker"
+            ],
             "path": "."
         },
         "funcsigs": {
@@ -157,7 +161,7 @@
                 "sha256:330cc27ccbf7f1e992e69fef78261dc7c6569012cf397db8d3de0234e6c937ca",
                 "sha256:a7bb0f2cf3a3fd1ab2732cb49eba4252c2af4240442415b4abce3b87022a8f50"
             ],
-            "markers": "python_version < '3.0'",
+            "markers": "python_version < '3.3'",
             "version": "==1.0.2"
         },
         "idna": {

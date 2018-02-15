@@ -26,5 +26,9 @@ setup(
             'bnrt = banneret.main:main'
         ]
     },
-    install_requires=['docker'],
+    install_requires=[],
+    extras_require={
+        'test': ['pytest', 'pytest-mock', 'tox'],
+        'docker': ['docker']
+    }
 )

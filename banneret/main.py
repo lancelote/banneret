@@ -15,14 +15,15 @@ except ImportError:
     docker = None
 
 USER = getpass.getuser()
-HOME = f'/Users/{USER}'
+HOME = '/Users/{user}'.format(user=USER)
 PWD = os.getcwd()
+DESKTOP = '{home}/Desktop'.format(home=HOME)
 
-PROJECTS = f'{HOME}/PycharmProjects'
-CONFIGS = f'{HOME}/Library/Preferences'
-CACHES = f'{HOME}/Library/Caches'
-PLUGINS = f'{HOME}/Library/Application Support'
-LOGS = f'{HOME}/Library/Logs'
+PROJECTS = '{home}/PycharmProjects'.format(home=HOME)
+CONFIGS = '{home}/Library/Preferences'.format(home=HOME)
+CACHES = '{home}/Library/Caches'.format(home=HOME)
+PLUGINS = '{home}/Library/Application Support'.format(home=HOME)
+LOGS = '{home}/Library/Logs'.format(home=HOME)
 
 SUPPORTED_IDE_ALIASES = {
     'pycharm': 'PyCharm',
@@ -36,6 +37,7 @@ SUPPORTED_IDE_ALIASES = {
 
 
 def remove(path, version):
+    path = str(path)
     folders = glob('%s/%s' % (path, version))
     for folder in folders:
         logging.info('rm %s' % folder)
@@ -129,6 +131,7 @@ def clean_docker(containers=True, images=True, volumes=True):
 
 def enable_error(folder, switch):
     """switch exception notification for specific settings folder"""
+    folder = str(folder)
     option = slice(0, 29)
     value = slice(30, None)
     config_file = os.path.join(folder, 'idea.properties')
@@ -136,7 +139,7 @@ def enable_error(folder, switch):
     try:
         with open(config_file, 'r') as f:
             lines = f.readlines()
-    except FileNotFoundError:
+    except IOError:
         logging.debug('config file was not found')
         lines = [config_line]
     else:
@@ -158,12 +161,13 @@ def enable_error(folder, switch):
 
 def enable_errors(version, path=CONFIGS, disable=False):
     """switch exception notification for given version"""
+    path = str(path)
     switch = 'disable' if disable else 'enable'
     folders = glob('%s/%s' % (path, version))
     for folder in folders:
         enable_error(folder, switch)
     if not folders:
-        raise FileNotFoundError
+        raise IOError
 
 
 def run_clean_command(args):
@@ -186,7 +190,7 @@ def run_clean_command(args):
 def run_archive_command(args):
     try:
         archive_project(args.project, args.target)
-    except FileNotFoundError:
+    except IOError:
         logging.info('unknown project or target')
         sys.exit(1)
 
@@ -214,11 +218,12 @@ def run_enable_errors_command(args):
         logging.info('wrong or unsupported version: %s' % args.version)
         sys.exit(1)
     switch = 'disable' if args.disable else 'enable'
-    if version != '*' or input(f'{switch} for all versions? (yes/no)') == 'yes':
+    answer = '{switch} for all versions? (yes/no)'.format(switch=switch)
+    if version != '*' or input(answer) == 'yes':
         try:
             enable_errors(version=ide + version, disable=args.disable)
             logging.info('restart PyCharm to apply changes')
-        except FileNotFoundError:
+        except IOError:
             logging.info('no settings folder - try to start PyCharm once')
             sys.exit(1)
     else:
@@ -261,7 +266,7 @@ def create_parser():
     cmd_archive = commands.add_parser('archive', help='archive current project')
     cmd_archive.add_argument('-p', '--project', default=PWD,
                              help='project to be archived')
-    cmd_archive.add_argument('-t', '--target', default=f'{HOME}/Desktop',
+    cmd_archive.add_argument('-t', '--target', default=DESKTOP,
                              help='where archive will be placed')
 
     # docker

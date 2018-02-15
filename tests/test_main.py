@@ -133,7 +133,7 @@ class TestRunCleanCommand:
 class TestRunArchiveCommand:
 
     def test_unknown_project_or_target(self, mock_archive_project, args):
-        mock_archive_project.side_effect = FileNotFoundError
+        mock_archive_project.side_effect = IOError
         with pytest.raises(SystemExit):
             run_archive_command(args)
         mock_archive_project.assert_called_once()
@@ -213,7 +213,7 @@ class TestRunErrorsCommand:
         mock_input.assert_called_once()
 
     def test_no_settings_was_found(self, mock_enable_errors, mock_input, args):
-        mock_enable_errors.side_effect = FileNotFoundError
+        mock_enable_errors.side_effect = IOError
         args.version = 'pycharm'
         mock_input.return_value = 'yes'
         with pytest.raises(SystemExit):

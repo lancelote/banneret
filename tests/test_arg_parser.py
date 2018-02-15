@@ -1,6 +1,6 @@
 import pytest
 
-from banneret.main import PWD, HOME
+from banneret.main import PWD, DESKTOP
 
 
 class TestGeneral:
@@ -76,7 +76,7 @@ class TestZip:
     def test_archive_without_args(self, parser):
         args = parser.parse_args(['archive'])
         assert args.command == 'archive'
-        assert args.target == f'{HOME}/Desktop'
+        assert args.target == DESKTOP
         assert args.project == PWD
 
     @pytest.mark.parametrize('flag', ['-t', '--target'])
@@ -90,7 +90,7 @@ class TestZip:
     def test_archive_with_project(self, parser, flag):
         args = parser.parse_args(['archive', flag, 'project'])
         assert args.command == 'archive'
-        assert args.target == f'{HOME}/Desktop'
+        assert args.target == DESKTOP
         assert args.project == 'project'
 
     def test_archive_with_target_and_project(self, parser):
