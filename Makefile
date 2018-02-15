@@ -9,7 +9,7 @@ help:
 	@echo "    uninstall banneret"
 
 update:
-	pipenv update
+	pipenv update  --dev
 
 test:
 	python -m pytest tests
