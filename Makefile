@@ -15,7 +15,7 @@ test:
 	python -m pytest tests
 
 install:
-	pipenv install -e .[docker][test] --dev
+	pipenv install -e .[docker,test] --dev
 
 uninstall:
 	pipenv uninstall banneret
