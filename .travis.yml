@@ -1,11 +1,14 @@
 language: python
 
-python:
-  - '3.6'
+matrix:
+  include:
+    - python: 2.7
+      env: TOXENV=py27
+    - python: 3.6
+      env: TOXENV=py36
 
 install:
-  - pip install pipenv
-  - make install
+  - pip install tox
 
 script:
-  - make test
+  - tox
