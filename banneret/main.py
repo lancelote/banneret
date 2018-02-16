@@ -46,13 +46,13 @@ def remove(path, version):
 
 
 def remove_all(version, configs=False, caches=False, plugins=False, logs=False):
-    logging.debug('remove args: version %s, configs %s, caches %s, plugins %s, '
+    logging.debug('Remove args: version %s, configs %s, caches %s, plugins %s, '
                   'logs %s' % (version, configs, caches, plugins, logs))
     removed = False
     everything = not any([configs, caches, plugins, logs])
-    logging.debug('remove all settings: %s' % everything)
+    logging.debug('Remove all settings: %s' % everything)
     if not sys.platform == 'darwin':
-        logging.info('wrong os: %s' % sys.platform)
+        logging.info('Wrong os: %s' % sys.platform)
         return
 
     if configs or everything:
@@ -63,7 +63,7 @@ def remove_all(version, configs=False, caches=False, plugins=False, logs=False):
         removed |= remove(PLUGINS, version)
     if logs or everything:
         removed |= remove(LOGS, version)
-    logging.debug('was something removed: %s' % removed)
+    logging.debug('Was something removed: %s' % removed)
     return removed
 
 
@@ -79,14 +79,14 @@ def archive_project(project, target, projects=PROJECTS):
 
 
 def normalize_version(version):
-    logging.debug('normalize: version %s' % version)
+    logging.debug('Normalize: version %s' % version)
     match = re.match(r'(?P<ide>[a-zA-Z]+)(?P<version>[\d.]+)?', version)
     if not match or match.group('ide').lower() not in SUPPORTED_IDE_ALIASES:
         raise ValueError
     else:
         ide = SUPPORTED_IDE_ALIASES[match.group('ide').lower()]
         version = match.group('version') or '*'
-        logging.debug('normalize result: ide %s, version %s' % (ide, version))
+        logging.debug('Normalize result: ide %s, version %s' % (ide, version))
         return ide, version
 
 
@@ -115,7 +115,7 @@ def remove_volumes(client):
 
 
 def clean_docker(containers=True, images=True, volumes=True):
-    logging.debug('clean docker args: containers=%s, images=%s, volumes=%s'
+    logging.debug('Clean docker args: containers=%s, images=%s, volumes=%s'
                   % (containers, images, volumes))
     removed = False
     client = docker.from_env()
@@ -140,22 +140,22 @@ def enable_error(folder, switch):
         with open(config_file, 'r') as f:
             lines = f.readlines()
     except IOError:
-        logging.debug('config file was not found')
+        logging.debug('Config file was not found')
         lines = [config_line]
     else:
         for i, line in enumerate(lines):
             if line[option] == 'idea.fatal.error.notification':
                 if switch in line[value]:
-                    logging.info('already %sd' % switch)
+                    logging.info('Already %sd' % switch)
                     sys.exit(1)
                 else:
-                    logging.debug('config line was found')
+                    logging.debug('Config line was found')
                     lines[i] = config_line
                     break
         else:
             lines.append(config_line)
     with open(config_file, 'w') as f:
-        logging.info('%s notifications in %s' % (switch, config_file))
+        logging.info('Notifications %sd for %s' % (switch, config_file))
         f.writelines(lines)
 
 
@@ -174,16 +174,16 @@ def run_clean_command(args):
     try:
         ide, version = normalize_version(args.version)
     except ValueError:
-        logging.info('wrong or unsupported version: %s' % args.version)
+        logging.info('Wrong or unsupported version: %s' % args.version)
         sys.exit(1)
-    if version != '*' or input('remove all versions? (yes/no) ') == 'yes':
+    if version != '*' or input('Remove all versions? (yes/no) ') == 'yes':
         removed = remove_all(
             ide + version, args.configs, args.caches, args.plugins, args.logs)
         if not removed:
-            logging.info('nothing to remove')
+            logging.info('Nothing to remove')
             sys.exit(1)
     else:
-        logging.info('abort')
+        logging.info('Abort')
         sys.exit(1)
 
 
@@ -191,48 +191,48 @@ def run_archive_command(args):
     try:
         archive_project(args.project, args.target)
     except IOError:
-        logging.info('unknown project or target')
+        logging.info('Unknown project or target')
         sys.exit(1)
 
 
 def run_docker_command(args):
     if not docker:
-        logging.info('docker api sdk required to operate'
+        logging.info('Docker api sdk required to operate'
                      ' - pip install docker')
         sys.exit(1)
     elif args.containers or args.images or args.volumes:
         removed = clean_docker(args.containers, args.images, args.volumes)
-    elif input('remove all containers/images/volumes? (yes/no) ') == 'yes':
+    elif input('Remove all containers/images/volumes? (yes/no) ') == 'yes':
         removed = clean_docker()
     else:
-        logging.info('abort')
+        logging.info('Abort')
         sys.exit(1)
     if not removed:
-        logging.info('nothing to remove')
+        logging.info('Nothing to remove')
 
 
 def run_enable_errors_command(args):
     try:
         ide, version = normalize_version(args.version)
     except ValueError:
-        logging.info('wrong or unsupported version: %s' % args.version)
+        logging.info('Wrong or unsupported version: %s' % args.version)
         sys.exit(1)
     switch = 'disable' if args.disable else 'enable'
-    answer = '{switch} for all versions? (yes/no)'.format(switch=switch)
+    answer = '{} for all versions? (yes/no)'.format(switch.capitalize())
     if version != '*' or input(answer) == 'yes':
         try:
             enable_errors(version=ide + version, disable=args.disable)
-            logging.info('restart PyCharm to apply changes')
+            logging.info('Restart PyCharm to apply changes')
         except IOError:
-            logging.info('no settings folder - try to start PyCharm once')
+            logging.info('No settings folder - try to start PyCharm once')
             sys.exit(1)
     else:
-        logging.info('abort')
+        logging.info('Abort')
         sys.exit(1)
 
 
 def create_parser():
-    parser = argparse.ArgumentParser(description='utils for PyCharm')
+    parser = argparse.ArgumentParser(description='Utils for PyCharm')
     commands = parser.add_subparsers(title='commands', dest='command')
     commands.required = True
 
@@ -292,7 +292,7 @@ def main():
 
     logging_level = logging.DEBUG if args.verbose else logging.INFO
     logging.basicConfig(level=logging_level, format='%(message)s')
-    logging.debug('cli arguments: %s' % ', '.join(sys.argv[1:]))
+    logging.debug('CLI arguments: %s' % ', '.join(sys.argv[1:]))
 
     if args.command == 'clean':
         run_clean_command(args)
@@ -303,7 +303,7 @@ def main():
     elif args.command == 'errors':
         run_enable_errors_command(args)
     else:
-        logging.info('unknown command')
+        logging.info('Unknown command')
         sys.exit(1)
 
 

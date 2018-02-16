@@ -1,12 +1,12 @@
 help:
 	@echo "update"
-	@echo "    reinstall all required packages"
+	@echo "    Reinstall all required packages"
 	@echo "test"
-	@echo "    run all the tests"
+	@echo "    Run all the tests"
 	@echo "install"
-	@echo "    install banneret and dependencies for development"
+	@echo "    Install banneret and dependencies for development"
 	@echo "uninstall"
-	@echo "    uninstall banneret"
+	@echo "    Uninstall banneret"
 
 update:
 	pipenv update  --dev

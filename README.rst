@@ -10,24 +10,24 @@
 banneret
 ========
 
-PyCharm management swiss-army-knife
+PyCharm management swiss-army-knife.
 
-requirements
+Requirements
 ------------
 
-- Python 3.6
+- Python 2.7 or 3.6
 - macOS
 
-supported
+Supported
 ---------
 
 - PyCharm
 - IntelliJIdea
 
-usage
+Usage
 -----
 
-explore options with ``-h`` flag, some examples:
+Explore options with ``-h`` flag, some examples:
 
 .. code::
 
@@ -43,13 +43,13 @@ explore options with ``-h`` flag, some examples:
     bnrt docker                # to remove all containers, images and volumes
     bnrt docker -i             # to remove all docker images
 
-    bnrt errors pycharm2017.2  # to enable exception notifications
-    bnrt errors -d pycharm     # to disable exception notifications
+    bnrt errors pycharm2017.2  # to enable exception notifications for PyCharm2017.2
+    bnrt errors -d pycharm     # to disable exception notifications for all PyCharms
 
     bnrt -v <command>          # verbose output for debugging
     bnrt --version             # script version
 
-management
-----------
+Development
+-----------
 
-for repository tasks ``Makefile`` is used, try ``make help`` to view available commands
+For repository tasks ``Makefile`` is used, try ``make help`` to view available commands.
