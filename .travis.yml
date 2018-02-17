@@ -6,10 +6,11 @@ matrix:
       env: TOXENV=py27
     - python: 3.6
       env: TOXENV=py36
+    - python: 3.6
+      env: TOXENV=lint
 
 install:
   - pip install tox
 
 script:
   - tox
-  - make lint
