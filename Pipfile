@@ -14,7 +14,6 @@ pytest-mock = "*"
 pylint = "*"
 pydocstyle = "*"
 pycodestyle = "*"
-mypy = "*"
 
 
 [packages]

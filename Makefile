@@ -18,7 +18,6 @@ lint:
 	python -m pylint --rcfile pylintrc/test.ini tests
 	python -m pydocstyle
 	python -m pycodestyle --select E,W .
-	python -m mypy . --ignore-missing-imports
 
 test:
 	python -m pytest tests
