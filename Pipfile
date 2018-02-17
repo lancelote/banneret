@@ -8,9 +8,13 @@ name = "pypi"
 [dev-packages]
 
 pytest = "*"
-"e1839a8" = {path = ".", extras = ["test", "docker"], editable = true}
+"e1839a8" = {path = ".", extras = ["docker", "test", "lint"], editable = true}
 tox = "*"
 pytest-mock = "*"
+pylint = "*"
+pydocstyle = "*"
+pycodestyle = "*"
+mypy = "*"
 
 
 [packages]

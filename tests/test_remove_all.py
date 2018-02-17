@@ -9,40 +9,7 @@ def fixture_mock_remove(mocker):
     yield mock_remove
 
 
-@pytest.fixture(name='_mock_win32')
-def fixture_mock_win32(mocker):
-    mocker.patch('sys.platform', 'win32')
-    yield
-
-
-@pytest.fixture(name='_mock_linux')
-def fixture_mock_linux(mocker):
-    mocker.patch('sys.platform', 'linux')
-    yield
-
-
-@pytest.fixture(name='_mock_darwin')
-def fixture_mock_darwin(mocker):
-    mocker.patch('sys.platform', 'darwin')
-    yield
-
-
-class TestOSSupport:
-
-    def test_windows_is_not_supported(self, mock_remove, _mock_win32):
-        remove_all('PyCharm*')
-        mock_remove.assert_not_called()
-
-    def test_linux_is_not_supported(self, mock_remove, _mock_linux):
-        remove_all('PyCharm*')
-        mock_remove.assert_not_called()
-
-    def test_mac_is_supported(self, mock_remove, _mock_darwin):
-        remove_all('PyCharm*')
-        assert mock_remove.call_count == 4
-
-
-@pytest.mark.usefixtures('_mock_darwin')
+@pytest.mark.usefixtures('darwin')
 class TestArgumentsLogic:
 
     def test_remove_all(self, mock_remove):
@@ -66,7 +33,7 @@ class TestArgumentsLogic:
         mock_remove.assert_called_once_with(LOGS, 'PyCharm*')
 
 
-@pytest.mark.usefixtures('_mock_darwin')
+@pytest.mark.usefixtures('darwin')
 class TestReturnStatus:
 
     def test_nothing_was_removed(self, mock_remove):

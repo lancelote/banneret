@@ -4,12 +4,6 @@ from banneret.main import main, run_clean_command, run_archive_command, \
     run_docker_command, run_enable_errors_command
 
 
-@pytest.fixture(name='mock_parser')
-def fixture_mock_parser(mocker):
-    mock_parser = mocker.patch('banneret.main.create_parser')
-    yield mock_parser
-
-
 @pytest.fixture(name='mock_run_clean_command')
 def fixture_mock_rcc(mocker):
     mock_rcc = mocker.patch('banneret.main.run_clean_command')
@@ -58,36 +52,45 @@ def fixture_mock_enable_errors(mocker):
     yield mock_enable_errors
 
 
+@pytest.mark.usefixtures('command')
+@pytest.mark.parametrize('command', [''], indirect=True)
+class TestOSSupport:
+
+    @pytest.mark.usefixtures('win32')
+    def test_windows_is_not_supported(self, log):
+        with pytest.raises(SystemExit):
+            main()
+        assert 'Wrong os: win32' in log.text
+
+    @pytest.mark.usefixtures('linux')
+    def test_linux_is_not_supported(self, log):
+        with pytest.raises(SystemExit):
+            main()
+        assert 'Wrong os: linux' in log.text
+
+    @pytest.mark.usefixtures('darwin')
+    def test_mac_is_supported(self, log):
+        with pytest.raises(SystemExit):
+            main()
+        assert 'Wrong os' not in log.text
+
+
+@pytest.mark.usefixtures('command')
 class TestRunCommand:
 
-    def test_clean(self, mock_parser,
-                   mock_run_clean_command,
-                   mock_run_archive_command,
-                   mock_run_docker_command):
-        mock_parser().parse_args().command = 'clean'
+    @pytest.mark.parametrize('command', ['clean'], indirect=True)
+    def test_clean(self, mock_run_clean_command):
         main()
         mock_run_clean_command.assert_called_once()
-        mock_run_archive_command.assert_not_called()
-        mock_run_docker_command.assert_not_called()
 
-    def test_archive(self, mock_parser,
-                     mock_run_clean_command,
-                     mock_run_archive_command,
-                     mock_run_docker_command):
-        mock_parser().parse_args().command = 'archive'
+    @pytest.mark.parametrize('command', ['archive'], indirect=True)
+    def test_archive(self, mock_run_archive_command):
         main()
-        mock_run_clean_command.assert_not_called()
         mock_run_archive_command.assert_called_once()
-        mock_run_docker_command.assert_not_called()
 
-    def test_docker(self, mock_parser,
-                    mock_run_clean_command,
-                    mock_run_archive_command,
-                    mock_run_docker_command):
-        mock_parser().parse_args().command = 'docker'
+    @pytest.mark.parametrize('command', ['docker'], indirect=True)
+    def test_docker(self, mock_run_docker_command):
         main()
-        mock_run_clean_command.assert_not_called()
-        mock_run_archive_command.assert_not_called()
         mock_run_docker_command.assert_called_once()
 
 
