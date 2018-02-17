@@ -172,7 +172,7 @@ class TestRunDockerCommand:
         mock_clean_docker.assert_called_with()
         mock_input.assert_called_once()
 
-    def test_remove_everything_abort(self, mock_input, mock_clean_docker, args):
+    def test_remove_all_abort(self, mock_input, mock_clean_docker, args):
         args.containers = False
         args.images = False
         args.volumes = False

@@ -16,7 +16,7 @@ install:
 lint:
 	python -m pylint --rcfile pylintrc/code.ini banneret
 	python -m pylint --rcfile pylintrc/test.ini tests
-	python -m pydocstyle
+	python -m pydocstyle banneret
 	python -m pycodestyle --select E,W .
 
 test:

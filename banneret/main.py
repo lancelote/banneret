@@ -3,11 +3,10 @@
 import argparse
 import getpass
 import logging
-import sys
-from glob import glob
-
 import os
 import re
+import sys
+from glob import glob
 from shutil import rmtree, make_archive
 
 from banneret.version import __version__
@@ -49,10 +48,11 @@ def remove(path, version):
     return bool(folders)
 
 
-def remove_all(version, configs=False, caches=False, plugins=False, logs=False):
+def remove_all(version, configs=False, caches=False, plugins=False,
+               logs=False):
     """Remove given settings for given IDE version."""
-    logging.debug('Remove args: version %s, configs %s, caches %s, plugins %s, '
-                  'logs %s', version, configs, caches, plugins, logs)
+    logging.debug('Remove args: version %s, configs %s, caches %s, plugins %s,'
+                  ' logs %s', version, configs, caches, plugins, logs)
     removed = False
     everything = not any([configs, caches, plugins, logs])
     logging.debug('Remove all settings: %s', everything)
@@ -276,7 +276,7 @@ def create_parser():
                            help='remove logs')
 
     # archive
-    cmd_archive = commands.add_parser('archive', help='archive current project')
+    cmd_archive = commands.add_parser('archive', help='archive current folder')
     cmd_archive.add_argument('-p', '--project', default=PWD,
                              help='project to be archived')
     cmd_archive.add_argument('-t', '--target', default=DESKTOP,
@@ -300,7 +300,7 @@ def create_parser():
 
 
 def main():
-    """Main entry point."""
+    """Execute main entry point."""
     parser = create_parser()
     args = parser.parse_args()
 

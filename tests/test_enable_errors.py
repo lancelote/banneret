@@ -12,13 +12,13 @@ def fixture_enable_error(mocker):
 class TestEnableErrors:
 
     @pytest.mark.parametrize('disable', [True, False])
-    def test_no_settings_folder(self, mock_enable_error, base_path, disable):
+    def test_no_settings_dir(self, mock_enable_error, base_path, disable):
         with pytest.raises(IOError):
             enable_errors('PyCharm2017.1', path=base_path, disable=disable)
         mock_enable_error.assert_not_called()
 
     @pytest.mark.parametrize('disable', [True, False])
-    def test_folders_exist(self, mock_enable_error, mocker, base_path, disable):
+    def test_dir_exist(self, mock_enable_error, mocker, base_path, disable):
         for folder in ['PyCharm2016.3', 'PyCharmCE2017.2', 'PyCharm2017.2']:
             base_path.mkdir(folder)
         enable_errors('PyCharm*', path=base_path, disable=disable)
