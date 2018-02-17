@@ -1,6 +1,6 @@
-import os
 from distutils.core import setup
 
+import os
 from setuptools import find_packages
 
 __version__ = 'unknown'
@@ -29,7 +29,7 @@ setup(
     install_requires=[],
     extras_require={
         'test': ['pytest', 'pytest-mock', 'tox'],
-        'lint': ['pylint', 'pydocstyle', 'pycodestyle'],
+        'lint': ['pylint', 'pydocstyle', 'pycodestyle', 'mypy'],
         'docker': ['docker']
     }
 )
