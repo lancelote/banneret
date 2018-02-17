@@ -75,7 +75,7 @@ class TestOSSupport:
         assert 'Wrong os' not in log.text
 
 
-@pytest.mark.usefixtures('command')
+@pytest.mark.usefixtures('command', 'darwin')
 class TestRunCommand:
 
     @pytest.mark.parametrize('command', ['clean'], indirect=True)
