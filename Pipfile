@@ -20,3 +20,4 @@ mypy = "*"
 [packages]
 
 docker = "*"
+click = "*"

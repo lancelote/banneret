@@ -26,7 +26,9 @@ setup(
             'bnrt = banneret.main:main'
         ]
     },
-    install_requires=[],
+    install_requires=[
+        'click'
+    ],
     extras_require={
         'test': ['pytest', 'pytest-mock', 'tox'],
         'lint': ['pylint', 'pydocstyle', 'pycodestyle', 'mypy'],
