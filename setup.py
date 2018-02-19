@@ -23,7 +23,7 @@ setup(
     keywords=['pycharm', 'cli'],
     entry_points={
         'console_scripts': [
-            'bnrt = banneret.main:main'
+            'bnrt = banneret.main:cli'
         ]
     },
     install_requires=[
