@@ -7,6 +7,9 @@ import os
 import re
 import sys
 from glob import glob
+
+import click
+
 from shutil import rmtree, make_archive
 
 from banneret.version import __version__
@@ -297,6 +300,12 @@ def create_parser():
     cmd_errors.add_argument('-d', '--disable', action='store_true',
                             help='disable errors notifications')
     return parser
+
+
+@click.group()
+@click.version_option(version=__version__)
+def cli():
+    pass
 
 
 def main():
