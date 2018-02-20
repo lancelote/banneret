@@ -181,24 +181,6 @@ def enable_errors(version, path=CONFIGS, disable=False):
         raise IOError
 
 
-def run_clean_command(args):
-    """Execute clean command for settings wipe."""
-    try:
-        ide, version = normalize_version(args.version)
-    except ValueError:
-        logging.info('Wrong or unsupported version: %s', args.version)
-        sys.exit(1)
-    if version != '*' or input('Remove all versions? (yes/no) ') == 'yes':
-        removed = remove_all(
-            ide + version, args.configs, args.caches, args.plugins, args.logs)
-        if not removed:
-            logging.info('Nothing to remove')
-            sys.exit(1)
-    else:
-        logging.info('Abort')
-        sys.exit(1)
-
-
 def run_archive_command(args):
     """Execute archive command to backup project."""
     try:
@@ -304,35 +286,52 @@ def create_parser():
 
 @click.group()
 @click.version_option(version=__version__)
-def cli():
-    pass
-
-
-def main():
+@click.option('-v', '--verbose', is_flag=True, help='Enable debug logging.')
+def cli(verbose):
     """Execute main entry point."""
-    parser = create_parser()
-    args = parser.parse_args()
-
-    logging_level = logging.DEBUG if args.verbose else logging.INFO
-    logging.basicConfig(level=logging_level, format='%(message)s')
-    logging.debug('CLI arguments: %s', ', '.join(sys.argv[1:]))
-
     if sys.platform != 'darwin':
         logging.info('Wrong os: %s', sys.platform)
         sys.exit(1)
 
-    if args.command == 'clean':
-        run_clean_command(args)
-    elif args.command == 'archive':
-        run_archive_command(args)
-    elif args.command == 'docker':
-        run_docker_command(args)
-    elif args.command == 'errors':
-        run_enable_errors_command(args)
+    logging_level = logging.DEBUG if verbose else logging.INFO
+    logging.basicConfig(level=logging_level, format='%(message)s')
+    logging.debug('CLI arguments: %s', ', '.join(sys.argv[1:]))
+
+
+@cli.command(help='Remove IDE settings.')
+@click.argument('version')
+@click.option('-s', '--configs', is_flag=True, help='Remove configurations.')
+@click.option('-c', '--caches', is_flag=True, help='Remove caches.')
+@click.option('-p', '--plugins', is_flag=True, help='Remove plugins.')
+@click.option('-l', '--logs', is_flag=True, help='Remove logs.')
+def clean(version, configs, caches, plugins, logs):
+    """Execute clean command for settings wipe."""
+    try:
+        ide, version = normalize_version(version)
+    except ValueError:
+        logging.info('Wrong or unsupported version: %s', version)
+        sys.exit(1)
+    if version != '*' or input('Remove all versions? (yes/no) ') == 'yes':
+        removed = remove_all(ide + version, configs, caches, plugins, logs)
+        if not removed:
+            logging.info('Nothing to remove')
+            sys.exit(1)
     else:
-        logging.info('Unknown command')
+        logging.info('Abort')
         sys.exit(1)
 
-
-if __name__ == '__main__':
-    main()
+# def main():
+#     """Execute main entry point."""
+#     if sys.platform != 'darwin':
+#         logging.info('Wrong os: %s', sys.platform)
+#         sys.exit(1)
+#
+#     if args.command == 'archive':
+#         run_archive_command(args)
+#     elif args.command == 'docker':
+#         run_docker_command(args)
+#     elif args.command == 'errors':
+#         run_enable_errors_command(args)
+#     else:
+#         logging.info('Unknown command')
+#         sys.exit(1)
