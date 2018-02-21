@@ -181,23 +181,6 @@ def enable_errors(version, path=CONFIGS, disable=False):
         raise IOError
 
 
-def run_docker_command(args):
-    """Execute docker command to remove docker-related objects."""
-    if not docker:
-        logging.info('Docker api sdk required to operate'
-                     ' - pip install docker')
-        sys.exit(1)
-    elif args.containers or args.images or args.volumes:
-        removed = clean_docker(args.containers, args.images, args.volumes)
-    elif input('Remove all containers/images/volumes? (yes/no) ') == 'yes':
-        removed = clean_docker()
-    else:
-        logging.info('Abort')
-        sys.exit(1)
-    if not removed:
-        logging.info('Nothing to remove')
-
-
 def run_enable_errors_command(args):
     """Execute enable error command to switch IDE error notification."""
     try:
@@ -322,6 +305,28 @@ def archive(project, target):
     except IOError:
         logging.info('Unknown project or target')
         sys.exit(1)
+
+
+@cli.command(help='Remove Docker artifacts.')
+@click.option('-c', '--containers', is_flag=True, help='Remove containers.')
+@click.option('-i', '--images', is_flag=True, help='Remove images.')
+@click.option('-v', '--volumes', is_flag=True, help='Remove volumes.')
+def docker(containers, images, volumes):
+    """Execute docker command to remove docker-related objects."""
+    print(containers, images, volumes)
+    if not docker:
+        logging.info('Docker api sdk required to operate'
+                     ' - pip install docker')
+        sys.exit(1)
+    elif containers or images or volumes:
+        removed = clean_docker(containers, images, volumes)
+    elif input('Remove all containers/images/volumes? (yes/no) ') == 'yes':
+        removed = clean_docker()
+    else:
+        logging.info('Abort')
+        sys.exit(1)
+    if not removed:
+        logging.info('Nothing to remove')
 
 
 # def main():
