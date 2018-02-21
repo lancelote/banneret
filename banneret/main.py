@@ -15,9 +15,9 @@ from shutil import rmtree, make_archive
 from banneret.version import __version__
 
 try:
-    import docker
+    import docker as docker_api
 except ImportError:
-    docker = None
+    docker_api = None
 
 USER = getpass.getuser()
 HOME = '/Users/{user}'.format(user=USER)
@@ -79,9 +79,9 @@ def archive_project(project, target, projects=PROJECTS):
     if os.sep not in project:
         project = os.path.join(projects, project)
         logging.debug('Project path not found, new path: %s', project)
-    archive = os.path.join(target, project.split(os.sep)[-1])
-    make_archive(base_name=archive, format='zip', root_dir=project)
-    logging.info('Archive %s.zip is created', archive)
+    archive_path = os.path.join(target, project.split(os.sep)[-1])
+    make_archive(base_name=archive_path, format='zip', root_dir=project)
+    logging.info('Archive %s.zip is created', archive_path)
 
 
 def normalize_version(version):
@@ -129,7 +129,7 @@ def clean_docker(containers=True, images=True, volumes=True):
     logging.debug('Clean docker args: containers=%s, images=%s, volumes=%s',
                   containers, images, volumes)
     removed = False
-    client = docker.from_env()
+    client = docker_api.from_env()
 
     if containers:
         removed |= remove_containers(client)
@@ -189,8 +189,8 @@ def run_enable_errors_command(args):
         logging.info('Wrong or unsupported version: %s', args.version)
         sys.exit(1)
     switch = 'disable' if args.disable else 'enable'
-    answer = '{} for all versions? (yes/no)'.format(switch.capitalize())
-    if version != '*' or input(answer) == 'yes':
+    answer = '{} for all versions?'.format(switch.capitalize())
+    if version != '*' or click.confirm(answer):
         try:
             enable_errors(version=ide + version, disable=args.disable)
             logging.info('Restart PyCharm to apply changes')
@@ -285,7 +285,7 @@ def clean(version, configs, caches, plugins, logs):
     except ValueError:
         logging.info('Wrong or unsupported version: %s', version)
         sys.exit(1)
-    if version != '*' or input('Remove all versions? (yes/no) ') == 'yes':
+    if version != '*' or click.confirm('Remove all versions?'):
         removed = remove_all(ide + version, configs, caches, plugins, logs)
         if not removed:
             logging.info('Nothing to remove')
@@ -313,14 +313,13 @@ def archive(project, target):
 @click.option('-v', '--volumes', is_flag=True, help='Remove volumes.')
 def docker(containers, images, volumes):
     """Execute docker command to remove docker-related objects."""
-    print(containers, images, volumes)
-    if not docker:
+    if not docker_api:
         logging.info('Docker api sdk required to operate'
                      ' - pip install docker')
         sys.exit(1)
     elif containers or images or volumes:
         removed = clean_docker(containers, images, volumes)
-    elif input('Remove all containers/images/volumes? (yes/no) ') == 'yes':
+    elif click.confirm('Remove all containers/images/volumes?'):
         removed = clean_docker()
     else:
         logging.info('Abort')
