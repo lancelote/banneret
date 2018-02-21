@@ -6,22 +6,25 @@ from banneret.main import cli
 class TestOSSupport:
 
     @pytest.mark.usefixtures('win32')
-    def test_windows_is_not_supported(self, log, runner):
+    def test_windows_is_not_supported(self, log, runner, mock_archive_project):
         result = runner.invoke(cli, ['archive'])
         assert result.exit_code == 1
         assert 'Wrong os: win32' in log.text
+        mock_archive_project.assert_not_called()
 
     @pytest.mark.usefixtures('linux')
-    def test_linux_is_not_supported(self, log, runner):
+    def test_linux_is_not_supported(self, log, runner, mock_archive_project):
         result = runner.invoke(cli, ['archive'])
         assert result.exit_code == 1
         assert 'Wrong os: linux' in log.text
+        mock_archive_project.assert_not_called()
 
     @pytest.mark.usefixtures('darwin')
-    def test_mac_is_supported(self, log, runner):
+    def test_mac_is_supported(self, log, runner, mock_archive_project):
         result = runner.invoke(cli, ['archive'])
         assert result.exit_code == 0
         assert 'Wrong os' not in log.text
+        mock_archive_project.assert_called_once()
 
 
 @pytest.mark.usefixtures('darwin')
