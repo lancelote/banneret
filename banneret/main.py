@@ -236,7 +236,7 @@ def archive(project, target):
 def docker(containers, images, volumes):
     """Execute docker command to remove docker-related objects."""
     if not docker_api:
-        logging.info('Docker api sdk required to operate'
+        logging.info('Docker API SDK required to operate'
                      ' - pip install docker')
         sys.exit(1)
     elif containers or images or volumes:
@@ -248,6 +248,7 @@ def docker(containers, images, volumes):
         sys.exit(1)
     if not removed:
         logging.info('Nothing to remove')
+        sys.exit(1)
 
 
 @cli.command(help='Enable notifications.')

@@ -1,28 +1,16 @@
 import logging
 
 import pytest
-
-from banneret.main import create_parser
-
-
-@pytest.fixture
-def parser():
-    return create_parser()
+from click.testing import CliRunner
 
 
 @pytest.fixture
-def mock_parser(mocker):
-    mock_parser = mocker.patch('banneret.main.create_parser')
-    yield mock_parser
+def runner():
+    return CliRunner()
 
 
 @pytest.fixture
 def client(mocker):
-    return mocker.Mock()
-
-
-@pytest.fixture
-def args(mocker):
     return mocker.Mock()
 
 
@@ -56,6 +44,20 @@ def darwin(mocker):
 
 
 @pytest.fixture
-def command(request, mock_parser):
-    mock_parser().parse_args().command = request.param
-    yield
+def mock_remove_all(mocker):
+    yield mocker.patch('banneret.main.remove_all')
+
+
+@pytest.fixture
+def mock_archive_project(mocker):
+    yield mocker.patch('banneret.main.archive_project')
+
+
+@pytest.fixture
+def mock_clean_docker(mocker):
+    yield mocker.patch('banneret.main.clean_docker')
+
+
+@pytest.fixture
+def mock_enable_errors(mocker):
+    yield mocker.patch('banneret.main.enable_errors')
