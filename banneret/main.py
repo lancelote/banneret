@@ -1,6 +1,5 @@
 """Banneret main entry point."""
 
-import argparse
 import getpass
 import logging
 import os
@@ -181,83 +180,6 @@ def enable_errors(version, path=CONFIGS, disable=False):
         raise IOError
 
 
-def run_enable_errors_command(args):
-    """Execute enable error command to switch IDE error notification."""
-    try:
-        ide, version = normalize_version(args.version)
-    except ValueError:
-        logging.info('Wrong or unsupported version: %s', args.version)
-        sys.exit(1)
-    switch = 'disable' if args.disable else 'enable'
-    answer = '{} for all versions?'.format(switch.capitalize())
-    if version != '*' or click.confirm(answer):
-        try:
-            enable_errors(version=ide + version, disable=args.disable)
-            logging.info('Restart PyCharm to apply changes')
-        except IOError:
-            logging.info('No settings folder - try to start PyCharm once')
-            sys.exit(1)
-    else:
-        logging.info('Abort')
-        sys.exit(1)
-
-
-def create_parser():
-    """CLI parser."""
-    parser = argparse.ArgumentParser(description='Utils for PyCharm')
-    commands = parser.add_subparsers(title='commands', dest='command')
-    commands.required = True
-
-    # parent parsers
-    # ide version
-    ide_version = argparse.ArgumentParser(add_help=False)
-    ide_version.add_argument('version', type=str,
-                             help='IDE version to remove settings for')
-
-    # version
-    parser.add_argument('--version', action='version',
-                        version='%(prog)s ' + __version__)
-
-    # verbose
-    parser.add_argument('-v', '--verbose', action='store_true',
-                        help='verbose level')
-
-    # clean
-    cmd_clean = commands.add_parser('clean', parents=[ide_version],
-                                    help='remove PyCharm settings')
-    cmd_clean.add_argument('-C', '--configs', action='store_true',
-                           help='remove configurations')
-    cmd_clean.add_argument('-c', '--caches', action='store_true',
-                           help='remove caches')
-    cmd_clean.add_argument('-p', '--plugins', action='store_true',
-                           help='remove plugins')
-    cmd_clean.add_argument('-l', '--logs', action='store_true',
-                           help='remove logs')
-
-    # archive
-    cmd_archive = commands.add_parser('archive', help='archive current folder')
-    cmd_archive.add_argument('-p', '--project', default=PWD,
-                             help='project to be archived')
-    cmd_archive.add_argument('-t', '--target', default=DESKTOP,
-                             help='where archive will be placed')
-
-    # docker
-    cmd_docker = commands.add_parser('docker', help='removes docker artifacts')
-    cmd_docker.add_argument('-c', '--containers', action='store_true',
-                            help='remove containers')
-    cmd_docker.add_argument('-i', '--images', action='store_true',
-                            help='remove images')
-    cmd_docker.add_argument('-v', '--volumes', action='store_true',
-                            help='remove volumes')
-
-    # errors
-    cmd_errors = commands.add_parser('errors', parents=[ide_version],
-                                     help='enable notifications')
-    cmd_errors.add_argument('-d', '--disable', action='store_true',
-                            help='disable errors notifications')
-    return parser
-
-
 @click.group()
 @click.version_option(version=__version__)
 @click.option('-v', '--verbose', is_flag=True, help='Enable debug logging.')
@@ -328,11 +250,25 @@ def docker(containers, images, volumes):
         logging.info('Nothing to remove')
 
 
-# def main():
-#     """Execute main entry point."""
-#     if args.command == 'archive':
-#         run_archive_command(args)
-#     elif args.command == 'docker':
-#         run_docker_command(args)
-#     elif args.command == 'errors':
-#         run_enable_errors_command(args)
+@cli.command(help='Enable notifications.')
+@click.argument('version')
+@click.option('-d', '--disable', )
+def errors(version, disable):
+    """Execute enable error command to switch IDE error notification."""
+    try:
+        ide, version = normalize_version(version)
+    except ValueError:
+        logging.info('Wrong or unsupported version: %s', version)
+        sys.exit(1)
+    switch = 'disable' if disable else 'enable'
+    answer = '{} for all versions?'.format(switch.capitalize())
+    if version != '*' or click.confirm(answer):
+        try:
+            enable_errors(version=ide + version, disable=disable)
+            logging.info('Restart PyCharm to apply changes')
+        except IOError:
+            logging.info('No settings folder - try to start PyCharm once')
+            sys.exit(1)
+    else:
+        logging.info('Abort')
+        sys.exit(1)
