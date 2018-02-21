@@ -6,10 +6,9 @@ import os
 import re
 import sys
 from glob import glob
+from shutil import rmtree, make_archive
 
 import click
-
-from shutil import rmtree, make_archive
 
 from banneret.version import __version__
 
