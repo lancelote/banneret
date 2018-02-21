@@ -181,15 +181,6 @@ def enable_errors(version, path=CONFIGS, disable=False):
         raise IOError
 
 
-def run_archive_command(args):
-    """Execute archive command to backup project."""
-    try:
-        archive_project(args.project, args.target)
-    except IOError:
-        logging.info('Unknown project or target')
-        sys.exit(1)
-
-
 def run_docker_command(args):
     """Execute docker command to remove docker-related objects."""
     if not docker:
@@ -320,18 +311,24 @@ def clean(version, configs, caches, plugins, logs):
         logging.info('Abort')
         sys.exit(1)
 
+
+@cli.command(help='Archive current project.')
+@click.option('-p', '--project', default=PWD)
+@click.option('-t', '--target', type=click.Path(exists=True), default=DESKTOP)
+def archive(project, target):
+    """Execute archive command to backup project."""
+    try:
+        archive_project(project, target)
+    except IOError:
+        logging.info('Unknown project or target')
+        sys.exit(1)
+
+
 # def main():
 #     """Execute main entry point."""
-#     if sys.platform != 'darwin':
-#         logging.info('Wrong os: %s', sys.platform)
-#         sys.exit(1)
-#
 #     if args.command == 'archive':
 #         run_archive_command(args)
 #     elif args.command == 'docker':
 #         run_docker_command(args)
 #     elif args.command == 'errors':
 #         run_enable_errors_command(args)
-#     else:
-#         logging.info('Unknown command')
-#         sys.exit(1)
