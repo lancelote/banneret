@@ -1,7 +1,10 @@
 import logging
+import sys
 
 import pytest
 from click.testing import CliRunner
+
+only_macos = pytest.mark.skipif(sys.platform != 'darwin', reason='Not macOS')
 
 
 @pytest.fixture
