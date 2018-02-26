@@ -38,6 +38,14 @@ class BanneretMacOS:
         'ideaic': 'IdeaIC',
     }
 
+    @classmethod
+    def default_project(cls):
+        return cls.PWD
+
+    @classmethod
+    def default_target(cls):
+        return cls.DESKTOP
+
     @staticmethod
     def remove(path, version):
         """Remove all version folders from path."""
@@ -222,8 +230,8 @@ def clean(bnrt, version, configs, caches, plugins, logs):
 
 
 @cli.command(help='Archive current project.')
-@click.option('-p', '--project')
-@click.option('-t', '--target', type=click.Path(exists=True))
+@click.option('-p', '--project', default=BanneretMacOS.default_project)
+@click.option('-t', '--target', default=BanneretMacOS.default_target())
 @click.pass_obj
 def archive(bnrt, project, target):
     """Execute archive command to backup project."""
