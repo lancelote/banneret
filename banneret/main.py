@@ -42,12 +42,12 @@ class BanneretMacOS:
 
     @classmethod
     def default_project(cls):
-        """Default project path for archive command."""
+        """Get default project path for archive command."""
         return cls.PWD
 
     @classmethod
     def default_target(cls):
-        """Default target path for archive command."""
+        """Get default target path for archive command."""
         return cls.DESKTOP
 
     @staticmethod
@@ -60,14 +60,15 @@ class BanneretMacOS:
             rmtree(folder)
         return bool(folders)
 
-    def remove_all(self, version, configs=False, caches=False, plugins=False,
-                   logs=False):
+    def remove_all(self, version, **kwargs):
         """Remove given settings for given IDE version."""
-        logging.debug(
-            'Remove args: version %s, configs %s, caches %s, plugins %s,'
-            ' logs %s', version, configs, caches, plugins, logs)
+        logging.debug('Remove args: version %s, %s', version, **kwargs)
         removed = False
-        everything = not any([configs, caches, plugins, logs])
+        everything = not any(kwargs.values())
+        configs = kwargs.get('configs', False)
+        caches = kwargs.get('caches', False)
+        plugins = kwargs.get('plugins', False)
+        logs = kwargs.get('logs', False)
         logging.debug('Remove all settings: %s', everything)
 
         if configs or everything:
@@ -166,6 +167,7 @@ class Docker:
     """Main docker related application logic."""
 
     def __init__(self):
+        """Create Docker API wrapper."""
         self.client = docker_api.from_env()
 
     def remove_containers(self):
@@ -217,7 +219,7 @@ def cli(ctx, verbose):
 @click.option('-p', '--plugins', is_flag=True, help='Remove plugins.')
 @click.option('-l', '--logs', is_flag=True, help='Remove logs.')
 @click.pass_obj
-def clean(bnrt, version, configs, caches, plugins, logs):
+def clean(bnrt, version, **kwargs):
     """Execute clean command for settings wipe."""
     try:
         ide, version = bnrt.normalize_version(version)
@@ -225,8 +227,7 @@ def clean(bnrt, version, configs, caches, plugins, logs):
         logging.info('Wrong or unsupported version: %s', version)
         sys.exit(1)
     if version != '*' or click.confirm('Remove all versions?'):
-        removed = bnrt.remove_all(ide + version, configs, caches, plugins,
-                                  logs)
+        removed = bnrt.remove_all(ide + version, **kwargs)
         if not removed:
             logging.info('Nothing to remove')
             sys.exit(1)

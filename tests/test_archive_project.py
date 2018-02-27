@@ -6,9 +6,8 @@ def test_folder_is_correctly_archived(tmpdir, bnrt):
     target = tmpdir.mkdir('target')
     unpack_target = tmpdir.mkdir('unpack_target')
     archive = target.join('project.zip')
-    with project.join('sample.py').open('w'):
-        pass
 
+    with project.join('sample.py').open('w'):
         bnrt.archive_project(project, target)
     with ZipFile(archive.strpath) as file_archive:
         file_archive.extractall(unpack_target.strpath)
@@ -25,8 +24,6 @@ def test_only_project_name_is_passed(tmpdir, bnrt):
     archive = target.join('project.zip')
 
     with project.join('sample.py').open('w'):
-        pass
-
         bnrt.archive_project('project', target, projects)
     with ZipFile(archive.strpath) as file_archive:
         file_archive.extractall(unpack_target.strpath)

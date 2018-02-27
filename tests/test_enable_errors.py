@@ -1,16 +1,14 @@
 import pytest
 
 
+@pytest.mark.parametrize('disable', [True, False])
 class TestEnableErrors:
 
-    @pytest.mark.parametrize('disable', [True, False])
-    def test_no_settings_dir(self, mock_enable_error, base_path, disable,
-                             bnrt):
+    def test_no_settings(self, mock_enable_error, base_path, disable, bnrt):
         with pytest.raises(IOError):
             bnrt.enable_errors('PyCharm2017.1', base_path, disable)
         mock_enable_error.assert_not_called()
 
-    @pytest.mark.parametrize('disable', [True, False])
     def test_dir_exist(self, mock_enable_error, mocker, base_path, disable,
                        bnrt):
         for folder in ['PyCharm2016.3', 'PyCharmCE2017.2', 'PyCharm2017.2']:
