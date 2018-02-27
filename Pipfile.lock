@@ -57,10 +57,10 @@
         },
         "docker": {
             "hashes": [
-                "sha256:cdf9e280e423664660dea9b9fd7d8292059ce597ca7cc662d4601a6f0814c214",
-                "sha256:994e0ab827ff9b09ee4ee47ccbaec824eada0a7946fb082482895567aa2c79ae"
+                "sha256:830823845cc32273896124d42e672eaeb2f509ea37eb7dca1101a5fbc1c451e2",
+                "sha256:53ee5532d59f63287d0da5f0fd8b34af5704382152114cc1e1f3eb79167bd567"
             ],
-            "version": "==3.0.1"
+            "version": "==3.1.0"
         },
         "docker-pycreds": {
             "hashes": [
@@ -132,7 +132,7 @@
                 "sha256:f0b0e4eba956de51238e17573b7087e852dfe9854afd2e9c873f73fc0ca0a6dd",
                 "sha256:9d98697f088eb1b0fa451391f91afb5e3ebde16bbdb272819fd091151fda4f1a"
             ],
-            "markers": "python_version == '2.7'",
+            "markers": "python_version < '3.4'",
             "version": "==1.5"
         },
         "click": {
@@ -172,7 +172,7 @@
                 "sha256:330cc27ccbf7f1e992e69fef78261dc7c6569012cf397db8d3de0234e6c937ca",
                 "sha256:a7bb0f2cf3a3fd1ab2732cb49eba4252c2af4240442415b4abce3b87022a8f50"
             ],
-            "markers": "python_version < '3.3'",
+            "markers": "python_version < '3.0'",
             "version": "==1.0.2"
         },
         "futures": {

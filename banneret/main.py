@@ -19,6 +19,8 @@ except ImportError:
 
 
 class BanneretMacOS:
+    """Main application logic for macOS."""
+
     USER = getpass.getuser()
     HOME = '/Users/{user}'.format(user=USER)
     PWD = os.getcwd()
@@ -40,10 +42,12 @@ class BanneretMacOS:
 
     @classmethod
     def default_project(cls):
+        """Default project path for archive command."""
         return cls.PWD
 
     @classmethod
     def default_target(cls):
+        """Default target path for archive command."""
         return cls.DESKTOP
 
     @staticmethod
@@ -159,6 +163,8 @@ class BanneretMacOS:
 
 
 class Docker:
+    """Main docker related application logic."""
+
     def __init__(self):
         self.client = docker_api.from_env()
 
