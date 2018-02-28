@@ -295,3 +295,7 @@ def errors(bnrt, version, disable):
     else:
         logging.info('Abort')
         sys.exit(1)
+
+
+if __name__ == '__main__':
+    cli()
