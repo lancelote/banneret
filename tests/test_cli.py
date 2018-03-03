@@ -1,7 +1,6 @@
 import pytest
 
 from banneret.main import cli
-from tests.conftest import only_macos
 
 
 class TestOSSupport:
@@ -28,7 +27,6 @@ class TestOSSupport:
         mock_archive_project.assert_called_once()
 
 
-@only_macos
 class TestCLI:
 
     def test_clean(self, runner, mock_remove_all):
@@ -48,7 +46,6 @@ class TestCLI:
         mock_enable_errors.assert_called_once()
 
 
-@only_macos
 class TestCleanCommand:
 
     def test_wrong_version(self, runner, log, mock_remove_all):
@@ -81,7 +78,6 @@ class TestCleanCommand:
         mock_remove_all.assert_called_once()
 
 
-@only_macos
 class TestArchiveCommand:
 
     def test_wrong_target_or_project(self, runner, log, mock_archive_project):
@@ -97,7 +93,6 @@ class TestArchiveCommand:
         mock_archive_project.assert_called_once()
 
 
-@only_macos
 class TestDockerCommand:
 
     def test_no_docker(self, mocker, runner, log, mock_clean_docker):
@@ -131,7 +126,6 @@ class TestDockerCommand:
         mock_clean_docker.assert_called_once()
 
 
-@only_macos
 class TestRunErrorsCommand:
 
     def test_wrong_version(self, runner, log, mock_enable_errors):
