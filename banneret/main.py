@@ -163,6 +163,10 @@ class BanneretMacOS:
             raise IOError
 
 
+class BanneretLinux(BanneretMacOS):
+    pass
+
+
 class Docker:
     """Main docker related application logic."""
 
@@ -201,15 +205,17 @@ class Docker:
 @click.pass_context
 def cli(ctx, verbose):
     """Execute main entry point."""
-    if sys.platform != 'darwin':
+    if sys.platform == 'darwin':
+        ctx.obj = BanneretMacOS()
+    elif sys.platform == 'linux':
+        ctx.obj = BanneretLinux()
+    else:
         logging.info('Wrong os: %s', sys.platform)
         sys.exit(1)
 
     logging_level = logging.DEBUG if verbose else logging.INFO
     logging.basicConfig(level=logging_level, format='%(message)s')
     logging.debug('CLI arguments: %s', ', '.join(sys.argv[1:]))
-
-    ctx.obj = BanneretMacOS()
 
 
 @cli.command(help='Remove IDE settings.')
