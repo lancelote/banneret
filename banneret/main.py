@@ -171,6 +171,7 @@ class BanneretMacOS(object):
 
 
 class BanneretLinux(BanneretMacOS):
+    """Main application logic for Linux."""
 
     @staticmethod
     def remove(path, version):
@@ -189,7 +190,7 @@ class BanneretLinux(BanneretMacOS):
         if everything:
             removed |= self.remove(HOME + '/{version}', version)
         else:
-            removed |= super(BanneretMacOS).remove_all(version, **kwargs)
+            removed |= super(BanneretLinux, self).remove_all(version, **kwargs)
         return removed
 
 
