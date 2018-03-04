@@ -33,24 +33,6 @@ def log(caplog):
 
 
 @pytest.fixture
-def win32(mocker):
-    mocker.patch('sys.platform', 'win32')
-    yield
-
-
-@pytest.fixture
-def linux(mocker):
-    mocker.patch('sys.platform', 'linux')
-    yield
-
-
-@pytest.fixture
-def darwin(mocker):
-    mocker.patch('sys.platform', 'darwin')
-    yield
-
-
-@pytest.fixture
 def mock_remove(mocker):
     yield mocker.patch('banneret.main.BanneretMacOS.remove')
 

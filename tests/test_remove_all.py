@@ -1,7 +1,6 @@
-import pytest
+from banneret.main import CONFIGS, CACHES, PLUGINS, LOGS
 
 
-@pytest.mark.usefixtures('darwin')
 class TestArgumentsLogic:
 
     def test_remove_all(self, mock_remove, bnrt):
@@ -10,22 +9,21 @@ class TestArgumentsLogic:
 
     def test_remove_configs(self, mock_remove, bnrt):
         bnrt.remove_all('PyCharm*', configs=True)
-        mock_remove.assert_called_once_with(bnrt.CONFIGS, 'PyCharm*')
+        mock_remove.assert_called_once_with(CONFIGS, 'PyCharm*')
 
     def test_remove_caches(self, mock_remove, bnrt):
         bnrt.remove_all('PyCharm*', caches=True)
-        mock_remove.assert_called_once_with(bnrt.CACHES, 'PyCharm*')
+        mock_remove.assert_called_once_with(CACHES, 'PyCharm*')
 
     def test_remove_plugins(self, mock_remove, bnrt):
         bnrt.remove_all('PyCharm*', plugins=True)
-        mock_remove.assert_called_once_with(bnrt.PLUGINS, 'PyCharm*')
+        mock_remove.assert_called_once_with(PLUGINS, 'PyCharm*')
 
     def test_remove_logs(self, mock_remove, bnrt):
         bnrt.remove_all('PyCharm*', logs=True)
-        mock_remove.assert_called_once_with(bnrt.LOGS, 'PyCharm*')
+        mock_remove.assert_called_once_with(LOGS, 'PyCharm*')
 
 
-@pytest.mark.usefixtures('darwin')
 class TestReturnStatus:
 
     def test_nothing_was_removed(self, mock_remove, bnrt):

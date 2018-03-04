@@ -1,30 +1,26 @@
 import pytest
 
-from banneret.main import cli
+from banneret.main import cli, PLATFORMS
 
 
 class TestOSSupport:
 
-    @pytest.mark.usefixtures('win32')
-    def test_windows_is_not_supported(self, log, runner, mock_archive_project):
+    @pytest.mark.parametrize('platform', PLATFORMS)
+    def test_support_os(self, log, runner, mocker, platform,
+                        mock_archive_project):
+        mocker.patch('sys.platform', platform)
+        result = runner.invoke(cli, ['archive'])
+        assert result.exit_code == 0
+        assert 'Wrong os' not in log.text
+        mock_archive_project.assert_called_once()
+
+    def test_windows_is_not_supported(self, log, runner, mocker,
+                                      mock_archive_project):
+        mocker.patch('sys.platform', 'win32')
         result = runner.invoke(cli, ['archive'])
         assert result.exit_code == 1
         assert 'Wrong os: win32' in log.text
         mock_archive_project.assert_not_called()
-
-    @pytest.mark.usefixtures('linux')
-    def test_linux_is_not_supported(self, log, runner, mock_archive_project):
-        result = runner.invoke(cli, ['archive'])
-        assert result.exit_code == 0
-        assert 'Wrong os' not in log.text
-        mock_archive_project.assert_called_once()
-
-    @pytest.mark.usefixtures('darwin')
-    def test_mac_is_supported(self, log, runner, mock_archive_project):
-        result = runner.invoke(cli, ['archive'])
-        assert result.exit_code == 0
-        assert 'Wrong os' not in log.text
-        mock_archive_project.assert_called_once()
 
 
 class TestCLI:

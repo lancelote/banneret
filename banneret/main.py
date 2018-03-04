@@ -17,38 +17,49 @@ try:
 except ImportError:
     docker_api = None
 
+ALIASES = {
+    'pycharm': 'PyCharm',
+    'pycharmce': 'PyCharmCE',
+    'intellijidea': 'IntelliJIdea',
+    'idea': 'IntelliJIdea',
+    'intellij': 'IntelliJIdea',
+    'ideac': 'IdeaIC',
+    'ideaic': 'IdeaIC',
+}
+PLATFORMS = {
+    'darwin',
+    'linux',
+    'linux2',
+}
 
-class BanneretMacOS:
-    """Main application logic for macOS."""
+USER = getpass.getuser()
+PWD = os.getcwd()
 
-    USER = getpass.getuser()
+if sys.platform == 'darwin':
     HOME = '/Users/{user}'.format(user=USER)
-    PWD = os.getcwd()
-    DESKTOP = '{home}/Desktop'.format(home=HOME)
-    PROJECTS = '{home}/PycharmProjects'.format(home=HOME)
     CONFIGS = '{home}/Library/Preferences'.format(home=HOME)
     CACHES = '{home}/Library/Caches'.format(home=HOME)
     PLUGINS = '{home}/Library/Application Support'.format(home=HOME)
     LOGS = '{home}/Library/Logs'.format(home=HOME)
-    ALIASES = {
-        'pycharm': 'PyCharm',
-        'pycharmce': 'PyCharmCE',
-        'intellijidea': 'IntelliJIdea',
-        'idea': 'IntelliJIdea',
-        'intellij': 'IntelliJIdea',
-        'ideac': 'IdeaIC',
-        'ideaic': 'IdeaIC',
-    }
+elif sys.platform.startswith('linux'):
+    HOME = '/home/{user}'.format(user=USER)
+    CONFIGS = '{home}/{{version}}/config'.format(home=HOME)
+    CACHES = '{home}/{{version}}/system/caches'.format(home=HOME)
+    PLUGINS = '{home}/{{version}}/config/plugins'.format(home=HOME)
+    LOGS = '{home}/{{version}}/system/log'.format(home=HOME)
+else:
+    HOME = None
+    CONFIGS = None
+    CACHES = None
+    PLUGINS = None
+    LOGS = None
 
-    @classmethod
-    def default_project(cls):
-        """Get default project path for archive command."""
-        return cls.PWD
+DESKTOP = '{home}/Desktop'.format(home=HOME)
+PROJECTS = '{home}/PycharmProjects'.format(home=HOME)
 
-    @classmethod
-    def default_target(cls):
-        """Get default target path for archive command."""
-        return cls.DESKTOP
+
+class BanneretMacOS(object):
+    """Main application logic for macOS."""
 
     @staticmethod
     def remove(path, version):
@@ -62,46 +73,42 @@ class BanneretMacOS:
 
     def remove_all(self, version, **kwargs):
         """Remove given settings for given IDE version."""
-        logging.debug('Remove args: version %s, %s', version, **kwargs)
         removed = False
         everything = not any(kwargs.values())
         configs = kwargs.get('configs', False)
         caches = kwargs.get('caches', False)
         plugins = kwargs.get('plugins', False)
         logs = kwargs.get('logs', False)
-        logging.debug('Remove all settings: %s', everything)
 
         if configs or everything:
-            removed |= self.remove(self.CONFIGS, version)
+            removed |= self.remove(CONFIGS, version)
         if caches or everything:
-            removed |= self.remove(self.CACHES, version)
+            removed |= self.remove(CACHES, version)
         if plugins or everything:
-            removed |= self.remove(self.PLUGINS, version)
+            removed |= self.remove(PLUGINS, version)
         if logs or everything:
-            removed |= self.remove(self.LOGS, version)
-        logging.debug('Was something removed: %s', removed)
+            removed |= self.remove(LOGS, version)
         return removed
 
     @staticmethod
     def archive_project(project=PWD, target=DESKTOP, projects=PROJECTS):
         """Archive given project and send to target."""
-        logging.debug('archive: project %s to target %s', project, target)
         project, target, projects = str(project), str(target), str(projects)
         if os.sep not in project:
             project = os.path.join(projects, project)
-            logging.debug('Project path not found, new path: %s', project)
         archive_path = os.path.join(target, project.split(os.sep)[-1])
         make_archive(base_name=archive_path, format='zip', root_dir=project)
         logging.info('Archive %s.zip is created', archive_path)
 
-    def normalize_version(self, version):
+    @staticmethod
+    def normalize_version(version):
         """Convert user given IDE version to standard format."""
         logging.debug('Normalize: version %s', version)
         match = re.match(r'(?P<ide>[a-zA-Z]+)(?P<version>[\d.]+)?', version)
-        if not match or match.group('ide').lower() not in self.ALIASES:
+        if not match or match.group('ide').lower() not in ALIASES:
             raise ValueError
         else:
-            ide = self.ALIASES[match.group('ide').lower()]
+            ide = ALIASES[match.group('ide').lower()]
             version = match.group('version') or '*'
             logging.debug('Normalize result: ide %s, version %s', ide, version)
             return ide, version
@@ -164,7 +171,26 @@ class BanneretMacOS:
 
 
 class BanneretLinux(BanneretMacOS):
-    pass
+
+    @staticmethod
+    def remove(path, version):
+        """Remove all version folders from path."""
+        path = str(path.format(version))
+        folders = glob(path)
+        for folder in folders:
+            logging.info('rm %s', folder)
+            rmtree(folder)
+        return bool(folders)
+
+    def remove_all(self, version, **kwargs):
+        """Remove given settings for given IDE version."""
+        removed = False
+        everything = not any(kwargs.values())
+        if everything:
+            removed |= self.remove(HOME + '/{version}', version)
+        else:
+            removed |= super(BanneretMacOS).remove_all(version, **kwargs)
+        return removed
 
 
 class Docker:
@@ -207,7 +233,7 @@ def cli(ctx, verbose):
     """Execute main entry point."""
     if sys.platform == 'darwin':
         ctx.obj = BanneretMacOS()
-    elif sys.platform == 'linux':
+    elif sys.platform.startswith('linux'):
         ctx.obj = BanneretLinux()
     else:
         logging.info('Wrong os: %s', sys.platform)
@@ -243,8 +269,8 @@ def clean(bnrt, version, **kwargs):
 
 
 @cli.command(help='Archive current project.')
-@click.option('-p', '--project', default=BanneretMacOS.default_project)
-@click.option('-t', '--target', default=BanneretMacOS.default_target())
+@click.option('-p', '--project', default=PWD)
+@click.option('-t', '--target', default=DESKTOP)
 @click.pass_obj
 def archive(bnrt, project, target):
     """Execute archive command to backup project."""
