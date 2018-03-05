@@ -1,6 +1,6 @@
-from distutils.core import setup
-
 import os
+
+from distutils.core import setup
 from setuptools import find_packages
 
 __version__ = 'unknown'
@@ -23,7 +23,7 @@ setup(
     keywords=['pycharm', 'cli'],
     entry_points={
         'console_scripts': [
-            'bnrt = banneret.main:cli'
+            'bnrt = banneret.cli:cli'
         ]
     },
     install_requires=[

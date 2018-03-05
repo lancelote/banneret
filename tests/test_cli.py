@@ -1,6 +1,6 @@
 import pytest
 
-from banneret.main import cli, PLATFORMS
+from banneret.cli import cli, PLATFORMS
 
 
 class TestOSSupport:
@@ -92,7 +92,7 @@ class TestArchiveCommand:
 class TestDockerCommand:
 
     def test_no_docker(self, mocker, runner, log, mock_clean_docker):
-        mocker.patch('banneret.main.docker_api', None)
+        mocker.patch('banneret.cli.docker_api', None)
         result = runner.invoke(cli, ['docker'])
         assert result.exit_code == 1
         assert 'Docker API SDK required' in log.text

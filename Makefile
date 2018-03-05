@@ -27,4 +27,4 @@ uninstall:
 	pipenv uninstall banneret
 
 update:
-	pipenv update  --dev
+	pipenv update --dev

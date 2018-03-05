@@ -3,12 +3,12 @@ import logging
 import pytest
 from click.testing import CliRunner
 
-from banneret.main import BanneretMacOS, Docker
+from banneret import Banneret, Docker
 
 
 @pytest.fixture
 def bnrt():
-    return BanneretMacOS()
+    return Banneret()
 
 
 @pytest.fixture
@@ -34,44 +34,44 @@ def log(caplog):
 
 @pytest.fixture
 def mock_remove(mocker):
-    yield mocker.patch('banneret.main.BanneretMacOS.remove')
+    yield mocker.patch('banneret.Banneret.remove')
 
 
 @pytest.fixture
 def mock_remove_all(mocker):
-    yield mocker.patch('banneret.main.BanneretMacOS.remove_all')
+    yield mocker.patch('banneret.Banneret.remove_all')
 
 
 @pytest.fixture
 def mock_archive_project(mocker):
-    yield mocker.patch('banneret.main.BanneretMacOS.archive_project')
+    yield mocker.patch('banneret.Banneret.archive_project')
 
 
 @pytest.fixture
 def mock_clean_docker(mocker):
-    yield mocker.patch('banneret.main.BanneretMacOS.clean_docker')
+    yield mocker.patch('banneret.Banneret.clean_docker')
 
 
 @pytest.fixture
 def mock_enable_error(mocker):
-    yield mocker.patch('banneret.main.BanneretMacOS.enable_error')
+    yield mocker.patch('banneret.Banneret.enable_error')
 
 
 @pytest.fixture
 def mock_enable_errors(mocker):
-    yield mocker.patch('banneret.main.BanneretMacOS.enable_errors')
+    yield mocker.patch('banneret.Banneret.enable_errors')
 
 
 @pytest.fixture
 def mock_remove_containers(mocker):
-    yield mocker.patch('banneret.main.Docker.remove_containers')
+    yield mocker.patch('banneret.Docker.remove_containers')
 
 
 @pytest.fixture
 def mock_remove_images(mocker):
-    yield mocker.patch('banneret.main.Docker.remove_images')
+    yield mocker.patch('banneret.Docker.remove_images')
 
 
 @pytest.fixture
 def mock_remove_volumes(mocker):
-    yield mocker.patch('banneret.main.Docker.remove_volumes')
+    yield mocker.patch('banneret.Docker.remove_volumes')
