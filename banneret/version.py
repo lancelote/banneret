@@ -1,3 +1,3 @@
 """Banneret version."""
 
-__version__ = '0.5.0.dev6'
+__version__ = '0.5.0.dev7'
