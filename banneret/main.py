@@ -165,7 +165,7 @@ class BanneretLinux(BanneretMacOS):
     @staticmethod
     def remove(path, version):
         """Remove all version folders from path."""
-        path = str(path.format(version=version))
+        path = str(path).format(version=version)
         folders = glob(path)
         for folder in folders:
             logging.info('rm %s', folder)

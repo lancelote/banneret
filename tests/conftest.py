@@ -1,9 +1,14 @@
 import logging
+import sys
 
 import pytest
 from click.testing import CliRunner
 
 from banneret import Banneret, Docker
+from banneret.cli import LINUX, MACOS
+
+only_mac = pytest.mark.skipif(sys.platform not in MACOS, reason='Not macOS')
+only_linux = pytest.mark.skipif(sys.platform not in LINUX, reason='Not Linux')
 
 
 @pytest.fixture

@@ -9,11 +9,9 @@ from banneret import Banneret
 from banneret.main import docker_api, PWD, DESKTOP
 from banneret.version import __version__
 
-PLATFORMS = {
-    'darwin',
-    'linux',
-    'linux2',
-}
+LINUX = {'linux', 'linux2'}
+MACOS = {'darwin'}
+PLATFORMS = LINUX | MACOS
 
 
 @click.group()
