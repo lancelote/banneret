@@ -1,3 +1,5 @@
+"""Main application logic."""
+
 import getpass
 import logging
 import os

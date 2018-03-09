@@ -5,12 +5,12 @@ from tests.conftest import only_linux, only_mac
 class TestArgumentsLogic:
 
     @only_mac
-    def test_remove_all(self, mock_remove, bnrt):
+    def test_remove_all_mac(self, mock_remove, bnrt):
         bnrt.remove_all('PyCharm*')
         assert mock_remove.call_count == 4
 
     @only_linux
-    def test_remove_all(self, mock_remove, bnrt):
+    def test_remove_all_linux(self, mock_remove, bnrt):
         bnrt.remove_all('PyCharm*')
         mock_remove.assert_called_once_with(HOME + '/{version}', 'PyCharm*')
 
