@@ -179,7 +179,7 @@ class BanneretLinux(BanneretMacOS):
         removed = False
         everything = not any(kwargs.values())
         if everything:
-            removed |= self.remove(HOME + '/{version}', version)
+            removed |= self.remove(HOME + '/.{version}', version)
         else:
             removed |= super(BanneretLinux, self).remove_all(version, **kwargs)
         return removed

@@ -12,7 +12,7 @@ class TestArgumentsLogic:
     @only_linux
     def test_remove_all_linux(self, mock_remove, bnrt):
         bnrt.remove_all('PyCharm*')
-        mock_remove.assert_called_once_with(HOME + '/{version}', 'PyCharm*')
+        mock_remove.assert_called_once_with(HOME + '/.{version}', 'PyCharm*')
 
     def test_remove_configs(self, mock_remove, bnrt):
         bnrt.remove_all('PyCharm*', configs=True)

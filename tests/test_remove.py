@@ -3,12 +3,24 @@ import sys
 from banneret.cli import MACOS, LINUX
 
 
+def create_settings(base_path, versions):
+    """Create settings folder depending on the OS."""
+    if sys.platform in MACOS:
+        for version in versions:
+            base_path.mkdir(version)
+    elif sys.platform in LINUX:
+        for version in versions:
+            base_path.mkdir('.' + version)
+    else:
+        raise OSError('Unsupported OS')
+
+
 def call_remove(path, version, bnrt):
     """Call remove method depending on the OS."""
     if sys.platform in MACOS:
         result = bnrt.remove(path, version)
     elif sys.platform in LINUX:
-        result = bnrt.remove(path + '/{version}', version)
+        result = bnrt.remove(path + '/.{version}', version)
     else:
         raise OSError('Unsupported OS')
     return result
@@ -16,8 +28,8 @@ def call_remove(path, version, bnrt):
 
 def test_removes_correct_dir(base_path, bnrt):
     remove_me = 'PyCharm2017.2'
-    for folder in ['PyCharm2016.3', 'PyCharmCE2017.2', 'PyCharm2017.2']:
-        base_path.mkdir(folder)
+    versions = ['PyCharm2016.3', 'PyCharmCE2017.2', 'PyCharm2017.2']
+    create_settings(base_path, versions)
     call_remove(base_path, remove_me, bnrt)
     assert len(base_path.listdir()) == 2
     assert remove_me not in base_path.listdir()
@@ -29,8 +41,8 @@ def test_nothing_to_remove(base_path, bnrt):
 
 def test_removes_everything(base_path, bnrt):
     do_not_remove = base_path.mkdir('do_no_remove')
-    for folder in ['PyCharm2016.3', 'PyCharmCE2017.2', 'PyCharm2017.2']:
-        base_path.mkdir(folder)
+    versions = ['PyCharm2016.3', 'PyCharmCE2017.2', 'PyCharm2017.2']
+    create_settings(base_path, versions)
     call_remove(base_path, 'PyCharm*', bnrt)
     assert base_path.listdir() == [do_not_remove]
 
@@ -44,5 +56,5 @@ def test_remove_returns_false_if_nothing_was_removed(bnrt):
 
 
 def test_returns_true_if_something_was_removed(base_path, bnrt):
-    base_path.mkdir('PyCharm2017.2')
+    create_settings(base_path, ['PyCharm2017.2'])
     assert call_remove(base_path, 'PyCharm2017.2', bnrt)
