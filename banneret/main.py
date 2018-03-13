@@ -34,10 +34,10 @@ if sys.platform == 'darwin':
     LOGS = '{home}/Library/Logs'.format(home=HOME)
 elif sys.platform.startswith('linux'):
     HOME = '/home/{user}'.format(user=USER)
-    CONFIGS = '{home}/{{version}}/config'.format(home=HOME)
-    CACHES = '{home}/{{version}}/system/caches'.format(home=HOME)
-    PLUGINS = '{home}/{{version}}/config/plugins'.format(home=HOME)
-    LOGS = '{home}/{{version}}/system/log'.format(home=HOME)
+    CONFIGS = '{home}/.{{version}}/config'.format(home=HOME)
+    CACHES = '{home}/.{{version}}/system/caches'.format(home=HOME)
+    PLUGINS = '{home}/.{{version}}/config/plugins'.format(home=HOME)
+    LOGS = '{home}/.{{version}}/system/log'.format(home=HOME)
 else:
     HOME = None
     CONFIGS = None
