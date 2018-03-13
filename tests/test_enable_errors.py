@@ -20,7 +20,7 @@ def call_enable_errors(version, path, disable, bnrt):
 def call_path(version, path):
     """Get call path for enable_error method depending on the OS."""
     if sys.platform in MACOS:
-        pass
+        path += '/' + version
     elif sys.platform in LINUX:
         path += '/.' + version
     else:
