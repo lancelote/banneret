@@ -1,4 +1,31 @@
+import sys
+
 import pytest
+
+from banneret.cli import MACOS, LINUX
+from tests.conftest import create_settings
+
+
+def call_enable_errors(version, path, disable, bnrt):
+    """Call enable errors method depending on the OS."""
+    if sys.platform in MACOS:
+        pass
+    elif sys.platform in LINUX:
+        path += '/.{version}'
+    else:
+        raise OSError('Unsupported OS')
+    bnrt.enable_errors(version, path, disable)
+
+
+def call_path(version, path):
+    """Get call path for enable_error method depending on the OS."""
+    if sys.platform in MACOS:
+        pass
+    elif sys.platform in LINUX:
+        path += '/.' + version
+    else:
+        raise OSError('Unsupported OS')
+    return path
 
 
 @pytest.mark.parametrize('disable', [True, False])
@@ -6,18 +33,18 @@ class TestEnableErrors:
 
     def test_no_settings(self, mock_enable_error, base_path, disable, bnrt):
         with pytest.raises(IOError):
-            bnrt.enable_errors('PyCharm2017.1', base_path, disable)
+            call_enable_errors('PyCharm2017.1', base_path, disable, bnrt)
         mock_enable_error.assert_not_called()
 
     def test_dir_exist(self, mock_enable_error, mocker, base_path, disable,
                        bnrt):
-        for folder in ['PyCharm2016.3', 'PyCharmCE2017.2', 'PyCharm2017.2']:
-            base_path.mkdir(folder)
-        bnrt.enable_errors('PyCharm*', base_path, disable)
+        versions = ['PyCharm2016.3', 'PyCharmCE2017.2', 'PyCharm2017.2']
+        create_settings(base_path, versions)
+        call_enable_errors('PyCharm*', base_path, disable, bnrt)
         switch = 'disable' if disable else 'enable'
-        calls = [mocker.call(base_path.join('PyCharm2016.3'), switch),
-                 mocker.call(base_path.join('PyCharm2017.2'), switch),
-                 mocker.call(base_path.join('PyCharmCE2017.2'), switch)]
+        calls = [mocker.call(call_path('PyCharm2016.3', base_path), switch),
+                 mocker.call(call_path('PyCharm2017.2', base_path), switch),
+                 mocker.call(call_path('PyCharmCE2017.2', base_path), switch)]
         mock_enable_error.assert_has_calls(calls, any_order=True)
 
 

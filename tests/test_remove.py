@@ -1,18 +1,7 @@
 import sys
 
 from banneret.cli import MACOS, LINUX
-
-
-def create_settings(base_path, versions):
-    """Create settings folder depending on the OS."""
-    if sys.platform in MACOS:
-        for version in versions:
-            base_path.mkdir(version)
-    elif sys.platform in LINUX:
-        for version in versions:
-            base_path.mkdir('.' + version)
-    else:
-        raise OSError('Unsupported OS')
+from tests.conftest import create_settings
 
 
 def call_remove(path, version, bnrt):

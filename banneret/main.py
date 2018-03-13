@@ -184,6 +184,16 @@ class BanneretLinux(BanneretMacOS):
             removed |= super(BanneretLinux, self).remove_all(version, **kwargs)
         return removed
 
+    def enable_errors(self, version, path=CONFIGS, disable=False):
+        """Switch exception notification for given version."""
+        path = str(path).format(version=version)
+        switch = 'disable' if disable else 'enable'
+        folders = glob(path)
+        for folder in folders:
+            self.enable_error(folder, switch)
+        if not folders:
+            raise IOError
+
 
 class Docker:
     """Main docker related application logic."""

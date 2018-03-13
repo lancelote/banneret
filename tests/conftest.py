@@ -80,3 +80,15 @@ def mock_remove_images(mocker):
 @pytest.fixture
 def mock_remove_volumes(mocker):
     yield mocker.patch('banneret.Docker.remove_volumes')
+
+
+def create_settings(base_path, versions):
+    """Create settings folder depending on the OS."""
+    if sys.platform in MACOS:
+        for version in versions:
+            base_path.mkdir(version)
+    elif sys.platform in LINUX:
+        for version in versions:
+            base_path.mkdir('.' + version)
+    else:
+        raise OSError('Unsupported OS')
