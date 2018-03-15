@@ -24,6 +24,3 @@ banneret.egg-info/
 # Vagrant
 .vagrant
 Vagrantfile
-
-# pipenv
-Pipfile.lock
