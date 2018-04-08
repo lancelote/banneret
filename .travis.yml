@@ -1,6 +1,6 @@
 language: python
 
-braches:
+branches:
   except:
     - bash
 
