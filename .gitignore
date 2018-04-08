@@ -1,26 +1,8 @@
 # PyCharm settings
 .idea/
 
-# pytest cache
-.cache/
-.pytest_cache/
-
-# Python byte code
-__pycache__/
-*.pyc
-
-# Installation cache
-banneret.egg-info/
-
 # macOS
 .DS_Store
 
-# tox
-.tox/
-
-# mypy
-.mypy_cache/
-
-# Vagrant
-.vagrant
-Vagrantfile
+# vim
+*.swp

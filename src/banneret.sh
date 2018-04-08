@@ -1,21 +1,28 @@
 #!/usr/bin/env bash
 
-if [[ $1 = "docker" ]]
-then
+if [[ $1 = "docker" ]]; then
+    containers=$(docker ps -q)
+    all_containers=$(docker ps -a -q)
+    images=$(docker images -q)
+    networks=$(docker network ls -q)
+    volumes=$(docker volume ls -q)
+
     echo Stop containers ...
-    docker stop `docker ps -q`
+    if [[ $containers != "" ]]; then docker stop $containers; fi
 
     echo Remove containers ...
-    docker rm `docker ps -a -q`
+    if [[ $all_containers != "" ]]; then docker stop $all_containers; fi
 
     echo Remove images ...
-    docker rmi -f `docker images -q`
+    if [[ $images != "" ]]; then docker rmi -f $images; fi
 
     echo Remove networks ...
-    docker network rm `docker network ls -q`
+    if [[ $networks != "" ]]; then docker network rm $networks; fi
 
     echo Remove volumes ...
-    docker volume rm `docker volume ls -q`
+    if [[ $volumes != "" ]]; then docker volume rm $volumes; fi
+
+    echo Done
 else
     echo Unknown command
 fi
