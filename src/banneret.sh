@@ -23,6 +23,10 @@ if [[ $1 = "docker" ]]; then
     if [[ $volumes != "" ]]; then docker volume rm $volumes; fi
 
     echo Done
+elif [[ $1 = "archive" ]]; then
+    archive=~/Desktop/$(basename "$PWD").zip
+    zip -rq $archive .
+    echo $archive
 else
     echo Unknown command
 fi
