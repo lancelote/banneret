@@ -11,7 +11,7 @@ if [[ $1 = "docker" ]]; then
     if [[ $containers != "" ]]; then docker stop $containers; fi
 
     echo Remove containers ...
-    if [[ $all_containers != "" ]]; then docker stop $all_containers; fi
+    if [[ $all_containers != "" ]]; then docker rm -f $all_containers; fi
 
     echo Remove images ...
     if [[ $images != "" ]]; then docker rmi -f $images; fi
