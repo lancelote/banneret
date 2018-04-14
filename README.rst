@@ -7,6 +7,11 @@
 .. image:: http://jb.gg/badges/team.svg
     :target: https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub
 
+DEPRECATED
+==========
+
+Project was rewritten in bash and became a part of my `bash script collection`_.
+
 banneret
 ========
 
@@ -53,3 +58,5 @@ Development
 -----------
 
 For repository tasks ``Makefile`` is used, try ``make help`` to view available commands.
+
+.. _bash script collection: https://github.com/lancelote/scripts
