@@ -10,7 +10,7 @@
 DEPRECATED
 ==========
 
-Project was rewritten in bash and became a part of my `bash script collection`_.
+Project was rewritten in bash and became a part of my bash script collection.
 
 banneret
 ========
@@ -58,5 +58,3 @@ Development
 -----------
 
 For repository tasks ``Makefile`` is used, try ``make help`` to view available commands.
-
-.. _bash script collection: https://github.com/lancelote/scripts
