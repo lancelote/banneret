@@ -10,7 +10,7 @@
 DEPRECATED
 ==========
 
-Project was rewritten in bash and became a part of my bash script collection.
+Project was moved to corporate git hosting.
 
 banneret
 ========
